@@ -1,0 +1,15 @@
+{
+	"name": "sulfide",
+	"version": "0.0.1",
+	"description": "Sulfide is a Selenide inspired library that can be used to simplify testing with Puppeteer.",
+	"main": "index.js",
+	"author": "Ronald Toussaint",
+	"license": "AGPL-3.0",
+	"dependencies": {
+		"jasmine": "^2.9.0",
+		"puppeteer": "^1.0.0"
+	},
+	"scripts": {
+		"examples": "node examples"
+	}
+}
