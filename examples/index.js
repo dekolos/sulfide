@@ -8,7 +8,7 @@ jasmine.loadConfig({
 	spec_files: [
 		'**/*.js',
 	],
-	stopSpecOnExpectationFailure: true,
+	stopSpecOnExpectationFailure: false,
 });
 
 jasmine.execute();

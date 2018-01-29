@@ -6,10 +6,6 @@
 	"author": "Ronald Toussaint",
 	"license": "AGPL-3.0",
 	"dependencies": {
-		"jasmine": "^2.9.0",
 		"puppeteer": "^1.0.0"
-	},
-	"scripts": {
-		"examples": "node examples"
 	}
 }

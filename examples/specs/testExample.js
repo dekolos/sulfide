@@ -1,8 +1,9 @@
 const s2 = require('../../Sulfide');
 s2.configure({
 	jasmine: true,
-	implicitWaitTime: 1500,
-	headless: true,
+	implicitWaitTime: 4000,
+	width: 800,
+	height: 600,
 });
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 
@@ -11,6 +12,7 @@ describe('Test example', () => {
 	it('should be able to open example.com', async () => {
 		await s2.open('https://www.example.com');
 		await s2('h1').shouldExist();
+		await s2.byText('Esxample Domain').shouldExist();
 		await s2.byText('Example Domain').shouldExist();
 		await s2.withText('ample Do').shouldExist();
 		await s2.byTextCaseInsensitive('eXaMpLE dOmAiN').shouldExist();

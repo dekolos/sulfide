@@ -61,6 +61,9 @@ Sulfide.open = async url => {
 	}
 
 	page = await Sulfide.getPage();
+	page.on('framenavigated', () => {
+		page = Sulfide.getFirstPage();
+	});
 	page.setViewport({
 		width: Sulfide.config.width - 10,
 		height: Sulfide.config.height - 10,
@@ -157,69 +160,62 @@ function SulfideElement(selectorOrXPath) {
 	}
 };
 
+SulfideElement.prototype.exists = async function() {
+	let el;
+	try {
+		if ( this.selector ) {
+			el = await (await Sulfide.getFirstPage()).$(this.selector);
+		} else if ( this.xpath ){
+			el = await (await Sulfide.getFirstPage()).$x(this.xpath);
+		}
+	} catch (err) {
+//		console.log(err)
+	}
+
+	return (Array.isArray(el) && el.length > 0) || !!el;
+};
+
 // Checks if the pageElement exists inside the page.
 // Will poll the page for timeout seconds to find the element.
 // If timeout is not given, it will use waitTime.
 SulfideElement.prototype.shouldExist = async function(timeout) {
 	timeout = timeout || Sulfide.config.implicitWaitTime;
 
-	const page = await Sulfide.getPage();
 	let el;
 	const options = {
 		timout: timeout,
 	};
-	if ( this.selector ){
-		el = await page.waitForSelector(this.selector, options);
-		if ( !el ) {
+
+
+	const t0 = new Date().getTime();
+
+	// NOTE: waitForXPath is not defined in v1.0.0 of puppeteer
+	// and the timeout doesn't work in waitForSelector
+	// so we must implement our own polling function
+	const poll = async (resolve, reject) => {
+		const found = await this.exists();
+		if ( found ){
+			resolve(true);
+			return true;
+		}
+
+		if ( new Date().getTime() - t0 > timeout ){
+			resolve(false);
 			if ( Sulfide.config.jasmine ) {
 				// Make jasmine fail the spec
-				expect(false).toBe(true, 'Element (' + this.selector + ') not found');
+				fail('Element ' + (this.selector || this.xpath) + ' not found');
 			}
-		}
-	} else if ( this.xpath ) {
-		if ( typeof page.waitForXPath === 'function' ){
-			el = await page.waitForXPath(this.xpath, options);
+			return false;
 		} else {
-			// NOTE: waitForXPath is not defined in v1.0.0 of puppeteer
-			// so we must implement our own polling function
-			const t0 = new Date().getTime();
-
-			// Only used for xpaths!
-			const exists = async () => {
-				let el;
-				try {
-					el = await (await Sulfide.getPage()).$x(this.xpath);
-				} catch (err) {
-					console.log(err)
-				}
-
-				return el.length > 0;
-			};
-
-			return new Promise((resolve, reject) => {
-				const poll = async () => {
-					const found = await exists();
-					if ( found ){
-						resolve(true);
-						return;
-					}
-
-					if ( new Date().getTime() - t0 > timeout ){
-						if ( Sulfide.config.jasmine ) {
-							// Make jasmine fail the spec
-							expect(false).toBe(true, 'Element (' + this.xpath + ') not found');
-						}
-						resolve(false);
-					} else {
-						setTimeout(poll, Sulfide.config.pollInterval);
-					}
-				};
-
-				poll();
-			});
-
+			setTimeout(poll, Sulfide.config.pollInterval, resolve, reject);
+			return false;
 		}
-	}
+	};
+
+
+	return new Promise( (resolve, reject) => {
+		poll(resolve, reject);
+	});
 };
 
 // Focusses the element and uses the keyboard to enter a text.
