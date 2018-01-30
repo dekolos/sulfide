@@ -26,6 +26,7 @@ function Sulfide(selectorOrXPath) {
 
 // Default configuration
 Sulfide.config = {
+	noGlobals: false,
 	headless: false,
 	ignoreHTTPSErrors: true,
 	devtools: false,
@@ -52,6 +53,10 @@ Sulfide.configure = config => {
 
 	return Sulfide.config;
 };
+
+Sulfide.sleep = timeout => new Promise(resolve => {
+	setTimeout(() => resolve(), timeout);
+});
 
 /**
  * Opens a browser if necessary and navigates to the given URL.
@@ -123,5 +128,8 @@ for ( selector in Selectors ) {
 	Sulfide[selector] = Selectors[selector]
 };
 
+if ( !Sulfide.config.noGlobals ) {
+	global.$ = Sulfide;
+}
 
 module.exports = Sulfide;
