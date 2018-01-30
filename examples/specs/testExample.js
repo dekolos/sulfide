@@ -18,18 +18,17 @@ describe('Test example', () => {
 	it('should be able to open example.com', async () => {
 		await $.open('https://www.example.com');
 		await $('h1').shouldExist();
-		await $.byText('Henk').shouldExist();
 		await $.byText('Example Domain').shouldExist();
 		await $.withText('ample Do').shouldExist();
 		await $.byTextCaseInsensitive('eXaMpLE dOmAiN').shouldExist();
 		await $.withTextCaseInsensitive('aMpLE dO').shouldExist();
 	});
 
-	xit('should be able to log in', async () => {
-		await $.open('https://127.0.0.1/kopano?logout');
+	it('should be able to log in', async () => {
+		await $.open('https://rotous.github.io/sulfide/tests/loginform/');
 		await $('#username').sendKeys('user1');
-		await $('#password').sendKeys('user1');
-		await $.byValue('Sign in').click();
-		await $('#zarafa-mainmenu').shouldExist(20000); // Wait for max 20 seconds
+		await $('#password').sendKeys('user1password');
+		await $.byValue('Login').click();
+		await $.byText('Welcome user1').shouldExist(20000); // Wait for max 20 seconds
 	});
 });
