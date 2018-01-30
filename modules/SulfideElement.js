@@ -22,7 +22,7 @@ module.exports = Sulfide => {
 	//		console.log(err)
 		}
 
-		return (Array.isArray(el) && el.length > 0) || !!el;
+		return Array.isArray(el) ? el.length > 0 : !!el;
 	};
 
 	// Checks if the pageElement exists inside the page.
