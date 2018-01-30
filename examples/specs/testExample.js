@@ -1,9 +1,15 @@
-const s2 = require('../../Sulfide');
+// Normally Sulfide would be installed with yarn and required like this:
+// const s2 = require('sulfide');
+// but since we are running the examples from the Sulfide repository we
+// haven't installed it.
+const s2 = require('../../modules/Sulfide');
+
+// Some configurations for Sulfide
 s2.configure({
 	jasmine: true,
 	implicitWaitTime: 4000,
-	width: 800,
-	height: 600,
+	width: 1200,
+	height: 800,
 });
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 

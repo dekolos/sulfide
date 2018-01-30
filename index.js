@@ -1,3 +1,3 @@
-const Sulfide = require('./Sulfide.js');
+const Sulfide = require('./modules/Sulfide.js');
 
 module.exports = Sulfide;
