@@ -19,9 +19,13 @@ describe('Test example', () => {
 		await $.open('https://www.example.com');
 		await $('h1').shouldExist();
 		await $.byText('Example Domain').shouldExist();
+		await $(byText('Example Domain')).shouldExist();
 		await $.withText('ample Do').shouldExist();
+		await $(withText('ample Do')).shouldExist();
 		await $.byTextCaseInsensitive('eXaMpLE dOmAiN').shouldExist();
+		await $(byTextCaseInsensitive('eXaMpLE dOmAiN')).shouldExist();
 		await $.withTextCaseInsensitive('aMpLE dO').shouldExist();
+		await $(withTextCaseInsensitive('aMpLE dO')).shouldExist();
 	});
 
 	it('should be able to log in', async () => {

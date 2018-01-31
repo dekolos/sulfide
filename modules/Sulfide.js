@@ -17,11 +17,16 @@ let page;
 
 /**
  * Main function of Sulfide. Acts as an SulfideElement creator.
- * @param {String} selectorOrXPath CSS selector or and xpath, used to create the SulfideElement
+ * @param {String|SulfideElement} selector CSS selector or xpath, used to create the SulfideElement, or a SulfideElement
  * @return {SulfideElement} the SulfideElement based on the passed selector or xpath
  */
-function Sulfide(selectorOrXPath) {
-	return new SulfideElement(selectorOrXPath);
+function Sulfide(selector) {
+	if ( typeof selector === 'object' ) {
+		// This should be an SulfideElement. Can't check it with instanceof though.
+		return selector;
+	}
+
+	return new SulfideElement(selector);
 }
 
 // Default configuration
@@ -130,6 +135,11 @@ for ( selector in Selectors ) {
 
 if ( !Sulfide.config.noGlobals ) {
 	global.$ = Sulfide;
+
+	// Add the selectors to the global namespace
+	for ( selector in Selectors ) {
+		global[selector] = Selectors[selector]
+	};
 }
 
 module.exports = Sulfide;
