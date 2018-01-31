@@ -19,7 +19,12 @@ describe('Test example', () => {
 		await $.open('https://www.example.com');
 		await $('h1').shouldExist();
 		await $('h1').should(exist());
+		await $('h11').shouldNot(exist());
+		await $('h11').shouldNotExist();
+		await $('h1').shouldBeVisible();
 		await $('h1').shouldBe(visible());
+		await $('h11').shouldNotBeVisible();
+		await $('h11').shouldNotBe(visible());
 		await $.byText('Example Domain').shouldExist();
 		await $(byText('Example Domain')).shouldExist();
 		await $(byText('Example Domain')).should(exist());

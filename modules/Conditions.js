@@ -23,7 +23,8 @@ module.exports = (Sulfide, SulfideElement) => {
 			return 'Condition not met'
 		}
 
-		async poll(element) {
+		async poll(element, negate) {
+			negate = !!negate;
 			const options = {
 				timout: this.timeout,
 			};
@@ -35,7 +36,7 @@ module.exports = (Sulfide, SulfideElement) => {
 			// so we must implement our own polling function
 			const poll = async (resolve, reject) => {
 				const conditionMet = await this.test(element);
-				if ( conditionMet ){
+				if ( (conditionMet && !negate) || !conditionMet && negate ){
 					resolve(true);
 					return true;
 				}
@@ -44,7 +45,7 @@ module.exports = (Sulfide, SulfideElement) => {
 					resolve(false);
 					if ( Sulfide.config.jasmine ) {
 						// Make jasmine fail the spec
-						fail(this.getFailureMessage(element));
+						fail(this.getFailureMessage(element, negate));
 					}
 					return false;
 				} else {
@@ -70,7 +71,11 @@ module.exports = (Sulfide, SulfideElement) => {
 		 * @param  {SulfideElement} element The element for which the condition will be tested
 		 * @return {String} The failure message for this condition
 		 */
-		getFailureMessage(element) {
+		getFailureMessage(element, negate) {
+			if ( negate ){
+				return 'Element ' + (element.selector || element.xpath) + ' is found';
+			}
+
 			return 'Element ' + (element.selector || element.xpath) + ' not found';
 		}
 
@@ -98,9 +103,12 @@ module.exports = (Sulfide, SulfideElement) => {
 	// Factory function to create ExistConditions
 	const exist = timeout => new ExistCondition(timeout);
 
-	// Add a shortcut function to the SulfideElement class
+	// Add shortcut functions to the SulfideElement class
 	SulfideElement.prototype.shouldExist = async function(timeout) {
 		return this.should(exist(timeout));
+	};
+	SulfideElement.prototype.shouldNotExist = async function(timeout) {
+		return this.shouldNot(exist(timeout));
 	};
 
 	/**
@@ -118,6 +126,10 @@ module.exports = (Sulfide, SulfideElement) => {
 		 * @return {String} The failure message for this condition
 		 */
 		getFailureMessage(element) {
+			if ( negate ){
+				return 'Element ' + (element.selector || element.xpath) + ' is visible';
+			}
+
 			if ( !this.elementExists ){
 				return 'Element ' + (element.selector || element.xpath) + ' not found, so not visible';
 			}
@@ -164,9 +176,12 @@ module.exports = (Sulfide, SulfideElement) => {
 	// Factory function to create VisibleCondition
 	const visible = timeout => new VisibleCondition(timeout);
 
-	// Add a shortcut function to the SulfideElement class
+	// Add shortcut functions to the SulfideElement class
 	SulfideElement.prototype.shouldBeVisible = async function(timeout) {
 		return this.should(visible(timeout));
+	};
+	SulfideElement.prototype.shouldNotBeVisible = async function(timeout) {
+		return this.shouldNot(visible(timeout));
 	};
 
 	return {

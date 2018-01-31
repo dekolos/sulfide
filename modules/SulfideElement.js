@@ -17,23 +17,40 @@ module.exports = (Sulfide, Conditions) => (
 		}
 
 		/**
-		 * Will check if the given condition has been met within the given time
+		 * Will check if the given condition has been met within the predefined time
 		 * @param {Condition} condition The condition that will be checked for the element
-		 * @param {Number} timeout The maximum time for the condition to be met
-		 * @return {Promise} Resolves to tue when the condition is met within the given time, or to false otherwise
+		 * @return {Promise} Resolves to tue when the condition is met within the predefined time, or to false otherwise
 		 */
-		async should(condition, timeout) {
-			return await condition.poll(this, timeout);
+		async should(condition) {
+			return await condition.poll(this);
 		}
 
 		/**
-		 * Alternative name for the should method
+		 * Alias for the should method
 		 * @param {Condition} condition The condition that will be checked for the element
-		 * @param {Number} timeout The maximum time for the condition to be met
-		 * @return {Promise} Resolves to tue when the condition is met within the given time, or to false otherwise
+		 * @return {Promise} Resolves to tue when the condition is met within the predefined time, or to false otherwise
 		 */
-		async shouldBe(condition, timeout) {
-			return this.should(condition, timeout);
+		async shouldBe(condition) {
+			return this.should(condition);
+		}
+
+		/**
+		 * Will check if the given condition will be 'unmet' within the predefined time, i.e. there should be a moment
+		 * when the condition is not met.
+		 * @param {Condition} condition The condition that will be checked for the element
+		 * @return {Promise} Resolves to tue when the condition is 'unmet' within the predefined time, or to false otherwise
+		 */
+		async shouldNot(condition) {
+			return await condition.poll(this, true);
+		}
+
+		/**
+		 * Alias for the shouldNot method
+		 * @param {Condition} condition The condition that will be checked for the element
+		 * @return {Promise} Resolves to tue when the condition is 'unmet' within the predefined time, or to false otherwise
+		 */
+		async shouldNotBe(condition) {
+			return this.shouldNot(condition);
 		}
 
 		/**
