@@ -24,23 +24,82 @@ To install Sulfide from the Github Repository you need git (duh), [NodeJS](https
 [yarn](https://yarnpkg.com/)
 
 ## Installation
+```
+git clone <THIS_REPOSITORY>
+cd sulfide
+yarn install
+```
 
+Or with npm in an existing project:
+```
+yarn add sulfide --dev
+# or
+# npm install sulfide --save-dev
+```
 
 ## Writing tests
 
 #### Configuration
-Writing tests is tried to be kept as simple as possible to set a most common default configuration. However it is just
+Writing tests is tried to be kept as simple as possible by using a most common default configuration. However it is just
 as simple to overwrite the default configuration with your own settings.
+
+```javascript
+const s2 = require('sulfide');
+s2.configure({
+    <YOUR CONFIG OPTIONS>
+});
+```
+
+Currently Sulfide supports the following configuration options:
+
+##### headless
+_default value: false_
+Will make puppeteer run Chrome in headless mode.
+
+##### ignoreHTTPSErrors
+_default value: true_
+Will make Chrome ignore https errors. Convenient if you are testing in environments with self-signed certificates.
+
+##### devtools
+_default value: false_
+Will open developer tools when Chrome launches.
+
+##### width
+_default value: 800_
+The width in pixels of the viewport of the Chrome window.
+
+##### height
+_default value: 600_
+The height in pixels of the viewport of the Chrome window.
+
+##### disableInfobars
+_default value: false_
+Disables the information bars in Chrome, for example the one that states that Chrome is being controlled by a script.
+
+##### implicitWaitTime
+_default value: 4000_
+Sulfide will poll the page to see if conditions are met. This tells Sulfide how long it should poll before giving up when
+a condition isn't met.
+
+##### pollInterval
+_default value: 200_
+Sulfide will poll the page to see if conditions are met. This tells Sulfide how long to wait between consecutive polls.
+
+##### jasmine
+_default value: false_
+When testing with Jasmine Sulfide can make specs fail when a condition check fails.
 
 ## Examples
 The examples directory contains an example project that uses Sulfide together with Jasmine. It runs some simple tests on
 https://www.example.com.
 
 ## API
-The Sulfide API has three main parts, Sulfide, SulfideElement, and the Selectors.
+The Sulfide API has four main parts, Sulfide, SulfideElement, selectors and conditions.
 
 ### Sulfide
 
 ### SulfideElement
 
 ### Selectors
+
+### Conditions
