@@ -7,19 +7,21 @@ require('../../modules/Sulfide');
 // Some configurations for Sulfide
 $.configure({
 	jasmine: true,
-	implicitWaitTime: 4000,
+	implicitWaitTime: 500,
 	width: 1200,
 	height: 800,
 });
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
 
 
 describe('Test example', () => {
 	it('should be able to open example.com', async () => {
 		await $.open('https://www.example.com');
 		await $('h1').shouldExist();
+		await $('h1').should(exist());
 		await $.byText('Example Domain').shouldExist();
 		await $(byText('Example Domain')).shouldExist();
+		await $(byText('Example Domain')).should(exist());
 		await $.withText('ample Do').shouldExist();
 		await $(withText('ample Do')).shouldExist();
 		await $.byTextCaseInsensitive('eXaMpLE dOmAiN').shouldExist();

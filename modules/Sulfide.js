@@ -1,7 +1,8 @@
 const puppeteer = require('puppeteer');
 
 const SulfideElement = require('./SulfideElement')(Sulfide);
-const Selectors = require('./Selectors')(Sulfide);
+const Conditions = require('./Conditions')(Sulfide, SulfideElement);
+const Selectors = require('./Selectors')(Sulfide, SulfideElement);
 
 /**
  * Contains a reference to the opened browser
@@ -21,8 +22,7 @@ let page;
  * @return {SulfideElement} the SulfideElement based on the passed selector or xpath
  */
 function Sulfide(selector) {
-	if ( typeof selector === 'object' ) {
-		// This should be an SulfideElement. Can't check it with instanceof though.
+	if ( selector instanceof SulfideElement ) {
 		return selector;
 	}
 
@@ -133,13 +133,19 @@ for ( selector in Selectors ) {
 	Sulfide[selector] = Selectors[selector]
 };
 
+// Add everything to the global namespace for easy usage
 if ( !Sulfide.config.noGlobals ) {
 	global.$ = Sulfide;
 
 	// Add the selectors to the global namespace
 	for ( selector in Selectors ) {
 		global[selector] = Selectors[selector]
-	};
+	}
+
+	// Add the conditions
+	for ( condition in Conditions ) {
+		global[condition] = Conditions[condition];
+	}
 }
 
 module.exports = Sulfide;
