@@ -23,7 +23,17 @@ module.exports = (Sulfide, Conditions) => (
 		 * @return {Promise} Resolves to tue when the condition is met within the given time, or to false otherwise
 		 */
 		async should(condition, timeout) {
-			return await condition.test(this, timeout);
+			return await condition.poll(this, timeout);
+		}
+
+		/**
+		 * Alternative name for the should method
+		 * @param {Condition} condition The condition that will be checked for the element
+		 * @param {Number} timeout The maximum time for the condition to be met
+		 * @return {Promise} Resolves to tue when the condition is met within the given time, or to false otherwise
+		 */
+		async shouldBe(condition, timeout) {
+			return this.should(condition, timeout);
 		}
 
 		/**
