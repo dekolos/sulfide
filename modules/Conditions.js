@@ -125,7 +125,7 @@ module.exports = (Sulfide, SulfideElement) => {
 		 * @param  {SulfideElement} element The element for which the condition will be tested
 		 * @return {String} The failure message for this condition
 		 */
-		getFailureMessage(element) {
+		getFailureMessage(element, negate) {
 			if ( negate ){
 				return 'Element ' + (element.selector || element.xpath) + ' is visible';
 			}

@@ -16,25 +16,64 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
 
 
 describe('Test example', () => {
-	xit('should be able to open example.com', async () => {
+	it('should be able to open example.com', async () => {
 		await $.open('https://www.example.com');
-		await $('h1').shouldExist();
+	});
+
+	it('should be able to check if an element exists', async () => {
+		await $.open('https://www.example.com');
 		await $('h1').should(exist());
-		await $('h11').shouldNot(exist());
-		await $('h11').shouldNotExist();
-		await $('h1').shouldBeVisible();
+
+		// Identical test with the shortcut method shouldExist()
+		await $('h1').shouldExist();
+	});
+
+	it('should be able to check if an element does not exists', async () => {
+		await $.open('https://www.example.com');
+		await $('h2').shouldNot(exist());
+
+		// Identical test with the shortcut method shouldNotExist()
+		await $('h2').shouldNotExist();
+	});
+
+	it('should be able to check if an element is visible', async () => {
+		await $.open('https://www.example.com');
 		await $('h1').shouldBe(visible());
-		await $('h11').shouldNotBeVisible();
-		await $('h11').shouldNotBe(visible());
-		await $.byText('Example Domain').shouldExist();
-		await $(byText('Example Domain')).shouldExist();
+
+		// Identical test with the shortcut method shouldBeVisible()
+		await $('h1').shouldBeVisible();
+	});
+
+	it('should be able to check if an element is not visible', async () => {
+		await $.open('https://www.example.com');
+		await $('h2').shouldNotBe(visible());
+
+		// Identical test with the shortcut method shouldNotBeVisible()
+		await $('h2').shouldNotBeVisible();
+	});
+
+	it('should be able to select an element by text', async () => {
+		await $.open('https://www.example.com');
 		await $(byText('Example Domain')).should(exist());
-		await $.withText('ample Do').shouldExist();
-		await $(withText('ample Do')).shouldExist();
-		await $.byTextCaseInsensitive('eXaMpLE dOmAiN').shouldExist();
-		await $(byTextCaseInsensitive('eXaMpLE dOmAiN')).shouldExist();
-		await $.withTextCaseInsensitive('aMpLE dO').shouldExist();
-		await $(withTextCaseInsensitive('aMpLE dO')).shouldExist();
+		await $.byText('Example Domain').should(exist());
+	});
+
+	it('should be able to select an element containing text', async () => {
+		await $.open('https://www.example.com');
+		await $(withText('ample Do')).should(exist());
+		await $.withText('ample Do').should(exist());
+	});
+
+	it('should be able to select an element by text (case-insensitive)', async () => {
+		await $.open('https://www.example.com');
+		await $(byTextCaseInsensitive('eXaMpLE dOmAiN')).should(exist());
+		await $.byTextCaseInsensitive('eXaMpLE dOmAiN').should(exist());
+	});
+
+	it('should be able to select an element containing text (case-insensitive)', async () => {
+		await $.open('https://www.example.com');
+		await $(withTextCaseInsensitive('aMpLE dO')).should(exist());
+		await $.withTextCaseInsensitive('aMpLE dO').should(exist());
 	});
 
 	it('should be able to check for css classes', async () => {
@@ -43,7 +82,7 @@ describe('Test example', () => {
 		await $('#username').shouldNotHave(cssClass('username'));
 	});
 
-	xit('should be able to log in', async () => {
+	it('should be able to log in', async () => {
 		await $.open('https://rotous.github.io/sulfide/tests/loginform/');
 		await $('#username').sendKeys('user1');
 		await $('#password').sendKeys('user1password');

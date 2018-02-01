@@ -69,6 +69,7 @@ Sulfide.sleep = timeout => new Promise(resolve => {
  */
 Sulfide.open = async url => {
 	if ( !browser ) {
+		console.log('launching browser')
 		browser = await puppeteer.launch({
 			headless: Sulfide.config.headless,
 			ignoreHTTPSErrors: Sulfide.config.ignoreHTTPSErrors,
@@ -81,14 +82,16 @@ Sulfide.open = async url => {
 		});
 	}
 
-	page = await Sulfide.getPage();
-	page.on('framenavigated', () => {
-		page = Sulfide.getFirstPage();
-	});
-	page.setViewport({
-		width: Sulfide.config.width,
-		height: Sulfide.config.height,
-	});
+	if ( !page ) {
+		page = await Sulfide.getPage();
+		page.on('framenavigated', async () => {
+			page = await Sulfide.getFirstPage();
+		});
+		await page.setViewport({
+			width: Sulfide.config.width,
+			height: Sulfide.config.height,
+		});
+	}
 
 	await page.goto(url, {waitUntil: 'load'});
 };
