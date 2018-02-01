@@ -7,5 +7,10 @@
 	"license": "AGPL-3.0",
 	"dependencies": {
 		"puppeteer": "^1.0.0"
-	}
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/rotous/sulfide.git"
+    },
+	"homepage": "https://github.com/rotous/sulfide"
 }

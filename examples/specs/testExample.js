@@ -2,10 +2,10 @@
 // const s2 = require('sulfide');
 // but since we are running the examples from the Sulfide repository we
 // haven't installed it.
-require('../../modules/Sulfide');
+const Sulfide = require('../../modules/Sulfide');
 
 // Some configurations for Sulfide
-$.configure({
+Sulfide.configure({
 	jasmine: true,
 	implicitWaitTime: 500,
 	width: 1200,

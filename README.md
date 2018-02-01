@@ -6,6 +6,8 @@
 
 ![Sulfide](https://rotous.github.io/sulfide/images/logo.png "Sulfide")
 # Sulfide
+[![npm version](https://badge.fury.io/js/sulfide.svg)](https://badge.fury.io/js/sulfide)
+
 Sulfide is a [Selenide](http://selenide.org/) inspired library for Google's [Puppeteer](https://github.com/GoogleChrome/puppeteer).
 It aims to make writing end-to-end tests for Chrome easy.
 
@@ -44,49 +46,40 @@ Writing tests is tried to be kept as simple as possible by using a most common d
 as simple to overwrite the default configuration with your own settings.
 
 ```javascript
-const s2 = require('sulfide');
-s2.configure({
-    <YOUR CONFIG OPTIONS>
+const Sulfide = require('sulfide');
+Sulfide.configure({
+    // Add your configuration adjustments here
 });
 ```
 
 Currently Sulfide supports the following configuration options:
 
-##### headless
-_default value: false_
+**headless** (_default value: false_)<br/>
 Will make puppeteer run Chrome in headless mode.
 
-##### ignoreHTTPSErrors
-_default value: true_
+**ignoreHTTPSErrors** (_default value: true_)<br/>
 Will make Chrome ignore https errors. Convenient if you are testing in environments with self-signed certificates.
 
-##### devtools
-_default value: false_
+**devtools** (_default value: false_)<br/>
 Will open developer tools when Chrome launches.
 
-##### width
-_default value: 800_
+**width** (_default value: 800_)<br/>
 The width in pixels of the viewport of the Chrome window.
 
-##### height
-_default value: 600_
+**height** (_default value: 600_)<br/>
 The height in pixels of the viewport of the Chrome window.
 
-##### disableInfobars
-_default value: false_
+**disableInfobars** (_default value: false_)<br/>
 Disables the information bars in Chrome, for example the one that states that Chrome is being controlled by a script.
 
-##### implicitWaitTime
-_default value: 4000_
+**implicitWaitTime** (_default value: 4000_)<br/>
 Sulfide will poll the page to see if conditions are met. This tells Sulfide how long it should poll before giving up when
 a condition isn't met.
 
-##### pollInterval
-_default value: 200_
+**pollInterval** (_default value: 200_)<br/>
 Sulfide will poll the page to see if conditions are met. This tells Sulfide how long to wait between consecutive polls.
 
-##### jasmine
-_default value: false_
+**jasmine** (_default value: false_)<br/>
 When testing with Jasmine Sulfide can make specs fail when a condition check fails.
 
 ## Examples
