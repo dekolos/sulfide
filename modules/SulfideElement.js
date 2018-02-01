@@ -16,6 +16,10 @@ module.exports = (Sulfide, Conditions) => (
 			}
 		}
 
+		//**********************************************************************
+		//*                            ASSERTIONS                              *
+		//**********************************************************************
+
 		/**
 		 * Will check if the given condition has been met within the predefined time
 		 * @param {Condition} condition The condition that will be checked for the element
@@ -31,6 +35,15 @@ module.exports = (Sulfide, Conditions) => (
 		 * @return {Promise} Resolves to tue when the condition is met within the predefined time, or to false otherwise
 		 */
 		async shouldBe(condition) {
+			return this.should(condition);
+		}
+
+		/**
+		 * Alias for the should method
+		 * @param {Condition} condition The condition that will be checked for the element
+		 * @return {Promise} Resolves to tue when the condition is met within the predefined time, or to false otherwise
+		 */
+		async shouldHave(condition) {
 			return this.should(condition);
 		}
 
@@ -52,6 +65,19 @@ module.exports = (Sulfide, Conditions) => (
 		async shouldNotBe(condition) {
 			return this.shouldNot(condition);
 		}
+
+		/**
+		 * Alias for the shouldNot method
+		 * @param {Condition} condition The condition that will be checked for the element
+		 * @return {Promise} Resolves to tue when the condition is 'unmet' within the predefined time, or to false otherwise
+		 */
+		async shouldNotHave(condition) {
+			return this.shouldNot(condition);
+		}
+
+		//**********************************************************************
+		//*                             ACTIONS                                *
+		//**********************************************************************
 
 		/**
 		 * Will focus the element (if it exists) and type the given text on the keyboard

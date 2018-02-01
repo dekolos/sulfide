@@ -10,12 +10,13 @@ Sulfide.configure({
 	implicitWaitTime: 500,
 	width: 1200,
 	height: 800,
+	disableInfobars: false,
 });
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
 
 
 describe('Test example', () => {
-	it('should be able to open example.com', async () => {
+	xit('should be able to open example.com', async () => {
 		await $.open('https://www.example.com');
 		await $('h1').shouldExist();
 		await $('h1').should(exist());
@@ -36,7 +37,13 @@ describe('Test example', () => {
 		await $(withTextCaseInsensitive('aMpLE dO')).shouldExist();
 	});
 
-	it('should be able to log in', async () => {
+	it('should be able to check for css classes', async () => {
+		await $.open('https://rotous.github.io/sulfide/tests/loginform/');
+		await $('.title').shouldHave(cssClass('title'));
+		await $('#username').shouldNotHave(cssClass('username'));
+	});
+
+	xit('should be able to log in', async () => {
 		await $.open('https://rotous.github.io/sulfide/tests/loginform/');
 		await $('#username').sendKeys('user1');
 		await $('#password').sendKeys('user1password');
