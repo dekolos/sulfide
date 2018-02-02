@@ -4,7 +4,7 @@
 > If you can't wait, feel free to test the current state of the library.
 > Do not hesitate to send us you're feedback.
 
-![Sulfide](https://rotous.github.io/sulfide/images/logo.png "Sulfide")
+![Sulfide](https://dekolos.github.io/sulfide/images/logo.png "Sulfide")
 # Sulfide
 [![npm version](https://badge.fury.io/js/sulfide.svg)](https://badge.fury.io/js/sulfide)
 

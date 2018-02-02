@@ -77,13 +77,13 @@ describe('Test example', () => {
 	});
 
 	it('should be able to check for css classes', async () => {
-		await $.open('https://rotous.github.io/sulfide/tests/loginform/');
+		await $.open('https://dekolos.github.io/sulfide/tests/loginform/');
 		await $('.title').shouldHave(cssClass('title'));
 		await $('#username').shouldNotHave(cssClass('username'));
 	});
 
 	it('should be able to log in', async () => {
-		await $.open('https://rotous.github.io/sulfide/tests/loginform/');
+		await $.open('https://dekolos.github.io/sulfide/tests/loginform/');
 		await $('#username').sendKeys('user1');
 		await $('#password').sendKeys('user1password');
 		await $.byValue('Login').click();
