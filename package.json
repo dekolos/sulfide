@@ -9,7 +9,12 @@
 		"jasmine": "^2.9.0",
 		"puppeteer": "^1.0.0"
 	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/dekolos/sulfide.git"
+	},
+	"homepage": "https://github.com/dekolos/sulfide",
 	"scripts": {
-		"examples": "node examples"
+		"tests": "node tests/index.js"
 	}
 }
