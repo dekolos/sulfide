@@ -32,7 +32,7 @@ function Sulfide(selector) {
 // Default configuration
 Sulfide.config = {
 	noGlobals: false,
-	headless: false,
+	headless: true,
 	ignoreHTTPSErrors: true,
 	devtools: false,
 	width: 800,
@@ -75,6 +75,8 @@ Sulfide.open = async url => {
 			ignoreHTTPSErrors: Sulfide.config.ignoreHTTPSErrors,
 			devtools: Sulfide.config.devtools,
 			args: [
+				'--no-sandbox',
+				'--disable-setuid-sandbox',
 				'--window-size=' + Sulfide.config.width + ',' + Sulfide.config.height,
 				Sulfide.config.disableInfobars ? '--disable-infobars' : '',
 				'--app='+url,
