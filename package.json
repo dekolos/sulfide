@@ -16,5 +16,8 @@
 	"homepage": "https://github.com/dekolos/sulfide",
 	"scripts": {
 		"tests": "node tests/index.js"
+	},
+	"devDependencies": {
+		"jasmine-console-reporter": "^2.0.1"
 	}
 }
