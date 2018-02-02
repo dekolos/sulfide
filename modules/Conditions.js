@@ -23,6 +23,29 @@ module.exports = (Sulfide, SulfideElement) => {
 			return 'Condition not met'
 		}
 
+		async getDomElement(element) {
+			let domElement;
+            try {
+                if ( element.selector ) {
+                    domElement = await (await Sulfide.getFirstPage()).$(element.selector);
+                } else if ( element.xpath ){
+                    domElement = await (await Sulfide.getFirstPage()).$x(element.xpath);
+                }
+            } catch (err) {
+        //		console.log(err)
+            }
+
+            if ( Array.isArray(domElement) ) {
+                if ( domElement.length > 0 ) {
+                    domElement = domElement[0];
+                } else {
+                    domElement = null;
+                }
+            }
+
+			return domElement;
+		}
+
 		async poll(element, negate) {
 			negate = !!negate;
 			const options = {
@@ -59,212 +82,16 @@ module.exports = (Sulfide, SulfideElement) => {
 				poll(resolve, reject);
 			});
 		}
-
 	}
 
-	/**
-	 * Condition to test if an element exists on the page.
-	 */
-	class ExistCondition extends Condition {
-		/**
-		 * Returns the message that will be passed to Jasmine when the condition is not met.
-		 * @param  {SulfideElement} element The element for which the condition will be tested
-		 * @return {String} The failure message for this condition
-		 */
-		getFailureMessage(element, negate) {
-			if ( negate ){
-				return 'Element ' + (element.selector || element.xpath) + ' is found';
-			}
+	// Read the conditions from the condtions directory
+	const fs = require('fs');
+	const files = fs.readdirSync(__dirname + '/conditions');
+	const factories = {};
+	files.forEach(file => {
+		const condition = require('./conditions/' + file)(Sulfide, SulfideElement, Condition);
+		factories[condition.factoryName] = condition.factory;
+	});
 
-			return 'Element ' + (element.selector || element.xpath) + ' not found';
-		}
-
-		/**
-		 * Tests if the given SulfideElement exists
-		 * @param  {SulfideElement} element The element for which the condition will be tested
-		 * @return {Promise} Resolves with true when the condition is met before the timout, false otherwise
-		 */
-		async test(element) {
-			let domElement;
-			try {
-				if ( element.selector ) {
-					domElement = await (await Sulfide.getFirstPage()).$(element.selector);
-				} else if ( element.xpath ){
-					domElement = await (await Sulfide.getFirstPage()).$x(element.xpath);
-				}
-			} catch (err) {
-		//		console.log(err)
-			}
-
-			return Array.isArray(domElement) ? domElement.length > 0 : !!domElement;
-		}
-	}
-
-	// Factory function to create ExistConditions
-	const exist = timeout => new ExistCondition(timeout);
-
-	// Add shortcut functions to the SulfideElement class
-	SulfideElement.prototype.shouldExist = async function(timeout) {
-		return this.should(exist(timeout));
-	};
-	SulfideElement.prototype.shouldNotExist = async function(timeout) {
-		return this.shouldNot(exist(timeout));
-	};
-
-	/**
-	 * Condition to test if an element exists on the page.
-	 */
-	class VisibleCondition extends Condition {
-		constructor(timeout) {
-			super(timeout);
-			this.elementExists = false;
-		}
-
-		/**
-		 * Returns the message that will be passed to Jasmine when the condition is not met.
-		 * @param  {SulfideElement} element The element for which the condition will be tested
-		 * @return {String} The failure message for this condition
-		 */
-		getFailureMessage(element, negate) {
-			if ( negate ){
-				return 'Element ' + (element.selector || element.xpath) + ' is visible';
-			}
-
-			if ( !this.elementExists ){
-				return 'Element ' + (element.selector || element.xpath) + ' not found, so not visible';
-			}
-
-			return 'Element ' + (element.selector || element.xpath) + ' is not visible';
-		}
-
-		/**
-		 * Tests if the given SulfideElement is visble.
-		 * @param  {SulfideElement} element The element for which the condition will be tested
-		 * @return {Promise} Resolves with true when the condition is met before the timout, false otherwise
-		 */
-		async test(element) {
-			let domElement;
-			try {
-				if ( element.selector ) {
-					domElement = await (await Sulfide.getFirstPage()).$(element.selector);
-				} else if ( element.xpath ){
-					domElement = await (await Sulfide.getFirstPage()).$x(element.xpath);
-				}
-			} catch (err) {
-		//		console.log(err)
-			}
-
-			if ( Array.isArray(domElement) ) {
-				if ( domElement.length > 0 ) {
-					domElement = domElement[0];
-				} else {
-					domElement = null;
-				}
-			}
-			if ( !domElement ) {
-				this.elementExists = false;
-				return false;
-			}
-
-			this.elementExists = true;
-
-			const boundingBox = await domElement.boundingBox();
-			return !!boundingBox;
-		}
-	}
-
-	// Factory function to create VisibleCondition
-	const visible = timeout => new VisibleCondition(timeout);
-
-	// Add shortcut functions to the SulfideElement class
-	SulfideElement.prototype.shouldBeVisible = async function(timeout) {
-		return this.should(visible(timeout));
-	};
-	SulfideElement.prototype.shouldNotBeVisible = async function(timeout) {
-		return this.shouldNot(visible(timeout));
-	};
-
-	/**
-	 * Condition to test if an element has the given CSS class.
-	 */
-	class CssClassCondition extends Condition {
-		constructor(cssClass, timeout) {
-			super(timeout);
-			this.cssClass = cssClass;
-			this.elementExists = false;
-		}
-
-		/**
-		 * Returns the message that will be passed to Jasmine when the condition is not met.
-		 * @param  {SulfideElement} element The element for which the condition will be tested
-		 * @return {String} The failure message for this condition
-		 */
-		getFailureMessage(element, negate) {
-			if ( negate ){
-				return 'Element ' + (element.selector || element.xpath) + ' does have CSS class "' + this.cssClass + '""';
-			}
-
-			if ( !this.elementExists ){
-				return 'Element ' + (element.selector || element.xpath) + ' not found, so does not have CSS class "' + this.cssClass + '""';
-			}
-
-			return 'Element ' + (element.selector || element.xpath) + ' does not have CSS class "' + this.cssClass + '""';
-		}
-
-		/**
-		 * Tests if the given SulfideElement has the given CSS class.
-		 * @param  {SulfideElement} element The element for which the condition will be tested
-		 * @return {Promise} Resolves with true when the condition is met before the timout, false otherwise
-		 */
-		async test(element) {
-			let domElement;
-			try {
-				if ( element.selector ) {
-					domElement = await (await Sulfide.getFirstPage()).$(element.selector);
-				} else if ( element.xpath ){
-					domElement = await (await Sulfide.getFirstPage()).$x(element.xpath);
-				}
-			} catch (err) {
-		//		console.log(err)
-			}
-
-			if ( Array.isArray(domElement) ) {
-				if ( domElement.length > 0 ) {
-					domElement = domElement[0];
-				} else {
-					domElement = null;
-				}
-			}
-			if ( !domElement ) {
-				this.elementExists = false;
-				return false;
-			}
-
-			this.elementExists = true;
-
-			const classString = await (await Sulfide.getPage()).evaluate(el => el.getAttribute('class'), domElement);
-			if ( !classString ) {
-				return false;
-			}
-			const classList = classString.split(' ');
-			return classList.some(className => className === this.cssClass);
-		}
-	}
-
-	// Factory function to create VisibleCondition
-	const cssClass = (css, timeout) => new CssClassCondition(css, timeout);
-
-	// Add shortcut functions to the SulfideElement class
-	SulfideElement.prototype.shouldHaveCssClass = async function(css, timeout) {
-		return this.should(cssClass(css, timeout));
-	};
-	SulfideElement.prototype.shouldNotHaveCssClass = async function(css, timeout) {
-		return this.shouldNot(cssClass(css, timeout));
-	};
-
-	return {
-		exist,
-		visible,
-		cssClass,
-	};
+	return factories;
 };
