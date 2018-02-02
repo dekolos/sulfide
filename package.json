@@ -10,7 +10,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/rotous/sulfide.git"
+		"url": "https://github.com/dekolos/sulfide.git"
     },
-	"homepage": "https://github.com/rotous/sulfide"
+	"homepage": "https://github.com/dekolos/sulfide"
 }
