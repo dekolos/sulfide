@@ -23,5 +23,16 @@ const reporter = new JasmineConsoleReporter({
 jasmine.env.clearReporters();
 jasmine.addReporter(reporter);
 
+const Sulfide = require('../modules/Sulfide');
+// Some configurations for Sulfide
+Sulfide.configure({
+	jasmine: true,
+	implicitWaitTime: 500,
+	width: 1200,
+	height: 800,
+	disableInfobars: false,
+});
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000; // 20 seconds
+
 // Execute the tests
 jasmine.execute();
