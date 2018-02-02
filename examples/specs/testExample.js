@@ -2,6 +2,7 @@ const s2 = require('../../Sulfide');
 s2.configure({
 	jasmine: true,
 	implicitWaitTime: 1500,
+	headless: true,
 });
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
 

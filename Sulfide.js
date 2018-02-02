@@ -54,6 +54,8 @@ Sulfide.open = async url => {
 				'--window-size=' + Sulfide.config.width + ',' + Sulfide.config.height,
 				Sulfide.config.disableInfobars ? '--disable-infobars' : '',
 				'--app='+url,
+				'--no-sandbox',
+				'--disable-setuid-sandbox',
 			],
 		});
 	}
