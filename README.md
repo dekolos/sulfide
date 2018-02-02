@@ -7,6 +7,7 @@
 ![Sulfide](https://dekolos.github.io/sulfide/images/logo.png "Sulfide")
 # Sulfide
 [![npm version](https://badge.fury.io/js/sulfide.svg)](https://badge.fury.io/js/sulfide)
+[![Build Status](https://travis-ci.org/dekolos/sulfide.svg?branch=master)](https://travis-ci.org/dekolos/sulfide)
 
 Sulfide is a [Selenide](http://selenide.org/) inspired library for Google's [Puppeteer](https://github.com/GoogleChrome/puppeteer).
 It aims to make writing end-to-end tests for Chrome easy.
