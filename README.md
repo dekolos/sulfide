@@ -55,7 +55,7 @@ Sulfide.configure({
 
 Currently Sulfide supports the following configuration options:
 
-**headless** (_default value: false_)<br/>
+**headless** (_default value: true_)<br/>
 Will make puppeteer run Chrome in headless mode.
 
 **ignoreHTTPSErrors** (_default value: true_)<br/>
