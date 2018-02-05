@@ -29,6 +29,7 @@ function Sulfide(selector) {
 	return new SulfideElement(selector);
 }
 
+/* eslint-disable no-magic-numbers */
 // Default configuration
 Sulfide.config = {
 	noGlobals: false,
@@ -45,6 +46,8 @@ Sulfide.config = {
 	// When running Sulfide with Jasmine, assertions can use jasmine assertions to fail tests
 	jasmine: false,
 };
+/* eslint-enable no-magic-numbers */
+
 /**
  * Set the configuration that Sulfide will use when launching a browser
  * @param  {Object} config The configuration object
@@ -52,8 +55,10 @@ Sulfide.config = {
  * config.
  */
 Sulfide.configure = config => {
-	for ( k in config ){
-		Sulfide.config[k] = config[k];
+	for ( const k in config ) {
+		if ( config.hasOwnProperty(k) ) {
+			Sulfide.config[k] = config[k];
+		}
 	}
 
 	return Sulfide.config;
@@ -69,7 +74,6 @@ Sulfide.sleep = timeout => new Promise(resolve => {
  */
 Sulfide.open = async url => {
 	if ( !browser ) {
-		console.log('launching browser')
 		browser = await puppeteer.launch({
 			headless: Sulfide.config.headless,
 			ignoreHTTPSErrors: Sulfide.config.ignoreHTTPSErrors,
@@ -79,7 +83,7 @@ Sulfide.open = async url => {
 				'--disable-setuid-sandbox',
 				'--window-size=' + Sulfide.config.width + ',' + Sulfide.config.height,
 				Sulfide.config.disableInfobars ? '--disable-infobars' : '',
-				'--app='+url,
+				'--app=' + url,
 			],
 		});
 	}
@@ -106,7 +110,7 @@ Sulfide.close = async () => {
 	await browser.close();
 	browser = null;
 	page = null;
-}
+};
 
 /**
  * Gets the first open page. Will open a page if none is opened yet
@@ -114,11 +118,11 @@ Sulfide.close = async () => {
  */
 Sulfide.getFirstPage = async () => {
 	const pages = await browser.pages();
-	if ( pages ){
+	if ( pages ) {
 		return pages[0];
-	} else {
-		return await browser.newPage();
 	}
+
+	return browser.newPage();
 };
 
 /**
@@ -131,25 +135,31 @@ Sulfide.getPage = async () => {
 	}
 
 	return page;
-}
-
-// Add the selectors
-for ( selector in Selectors ) {
-	Sulfide[selector] = Selectors[selector]
 };
+
+// Add the selectors to Sulfide
+for ( const selector in Selectors ) {
+	if ( Selectors.hasOwnProperty(selector) ) {
+		Sulfide[selector] = Selectors[selector];
+	}
+}
 
 // Add everything to the global namespace for easy usage
 if ( !Sulfide.config.noGlobals ) {
 	global.$ = Sulfide;
 
-	// Add the selectors to the global namespace
-	for ( selector in Selectors ) {
-		global[selector] = Selectors[selector]
+	// Add the selectors
+	for ( const selector in Selectors ) {
+		if ( Selectors.hasOwnProperty(selector) ) {
+			global[selector] = Selectors[selector];
+		}
 	}
 
 	// Add the conditions
-	for ( condition in Conditions ) {
-		global[condition] = Conditions[condition];
+	for ( const condition in Conditions ) {
+		if ( Conditions.hasOwnProperty(condition) ) {
+			global[condition] = Conditions[condition];
+		}
 	}
 }
 
