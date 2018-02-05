@@ -15,9 +15,11 @@
 	},
 	"homepage": "https://github.com/dekolos/sulfide",
 	"scripts": {
-		"tests": "node tests/index.js"
+		"test": "node tests/index.js",
+		"lint": "./node_modules/.bin/eslint '**/*.js'"
 	},
 	"devDependencies": {
+		"eslint": "^4.17.0",
 		"jasmine-console-reporter": "^2.0.1"
 	}
 }

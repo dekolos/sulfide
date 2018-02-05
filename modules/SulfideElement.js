@@ -9,7 +9,7 @@ module.exports = (Sulfide, Conditions) => (
 		 * @param  {String} selectorOrXPath A CSS selector or an xpath
 		 */
 		constructor(selectorOrXPath) {
-			if ( selectorOrXPath.substr(0, 2) === '//' ){
+			if ( selectorOrXPath.substr(0, 2) === '//' ) {
 				this.xpath = selectorOrXPath;
 			} else {
 				this.selector = selectorOrXPath;
@@ -26,7 +26,7 @@ module.exports = (Sulfide, Conditions) => (
 		 * @return {Promise} Resolves to tue when the condition is met within the predefined time, or to false otherwise
 		 */
 		async should(condition) {
-			return await condition.poll(this);
+			return condition.poll(this);
 		}
 
 		/**
@@ -54,7 +54,7 @@ module.exports = (Sulfide, Conditions) => (
 		 * @return {Promise} Resolves to tue when the condition is 'unmet' within the predefined time, or to false otherwise
 		 */
 		async shouldNot(condition) {
-			return await condition.poll(this, true);
+			return condition.poll(this, true);
 		}
 
 		/**

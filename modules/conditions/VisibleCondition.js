@@ -1,64 +1,64 @@
 module.exports = (Sulfide, SulfideElement, Condition) => {
-    /**
-     * Condition to test if an element exists on the page.
-     */
-    class VisibleCondition extends Condition {
-        constructor(timeout) {
-            super(timeout);
-            this.elementExists = false;
-        }
+	/**
+	 * Condition to test if an element exists on the page.
+	 */
+	class VisibleCondition extends Condition {
+		constructor(timeout) {
+			super(timeout);
+			this.elementExists = false;
+		}
 
-        /**
-         * Returns the message that will be passed to Jasmine when the condition is not met.
-         * @param  {SulfideElement} element The element for which the condition will be tested
-         * @return {String} The failure message for this condition
-         */
-        getFailureMessage(element, negate) {
-            if ( negate ){
-                return 'Element ' + (element.selector || element.xpath) + ' is visible';
-            }
+		/**
+		 * Returns the message that will be passed to Jasmine when the condition is not met.
+		 * @param  {SulfideElement} element The element for which the condition will be tested
+		 * @return {String} The failure message for this condition
+		 */
+		getFailureMessage(element, negate) {
+			if ( negate ) {
+				return 'Element ' + (element.selector || element.xpath) + ' is visible';
+			}
 
-            if ( !this.elementExists ){
-                return 'Element ' + (element.selector || element.xpath) + ' not found, so not visible';
-            }
+			if ( !this.elementExists ) {
+				return 'Element ' + (element.selector || element.xpath) + ' not found, so not visible';
+			}
 
-            return 'Element ' + (element.selector || element.xpath) + ' is not visible';
-        }
+			return 'Element ' + (element.selector || element.xpath) + ' is not visible';
+		}
 
-        /**
-         * Tests if the given SulfideElement is visble.
-         * @param  {SulfideElement} element The element for which the condition will be tested
-         * @return {Promise} Resolves with true when the condition is met before the timout, false otherwise
-         */
-        async test(element) {
-            const domElement = await this.getDomElement(element);
-            
-            if ( !domElement ) {
-                this.elementExists = false;
-                return false;
-            }
+		/**
+		 * Tests if the given SulfideElement is visble.
+		 * @param  {SulfideElement} element The element for which the condition will be tested
+		 * @return {Promise} Resolves with true when the condition is met before the timout, false otherwise
+		 */
+		async test(element) {
+			const domElement = await this.getDomElement(element);
 
-            this.elementExists = true;
+			if ( !domElement ) {
+				this.elementExists = false;
+				return false;
+			}
 
-            const boundingBox = await domElement.boundingBox();
-            return !!boundingBox;
-        }
-    }
+			this.elementExists = true;
 
-    // Factory function to create VisibleCondition
-    const visible = timeout => new VisibleCondition(timeout);
+			const boundingBox = await domElement.boundingBox();
+			return Boolean(boundingBox);
+		}
+	}
 
-    // Add shortcut functions to the SulfideElement class
-    SulfideElement.prototype.shouldBeVisible = async function(timeout) {
-        return this.should(visible(timeout));
-    };
-    SulfideElement.prototype.shouldNotBeVisible = async function(timeout) {
-        return this.shouldNot(visible(timeout));
-    };
+	// Factory function to create VisibleCondition
+	const visible = timeout => new VisibleCondition(timeout);
 
-    return {
-        class: VisibleCondition,
-        factory: visible,
-        factoryName: 'visible',
-    }
+	// Add shortcut functions to the SulfideElement class
+	SulfideElement.prototype.shouldBeVisible = async function shouldBeVisible(timeout) {
+		return this.should(visible(timeout));
+	};
+	SulfideElement.prototype.shouldNotBeVisible = async function shouldNotBeVisible(timeout) {
+		return this.shouldNot(visible(timeout));
+	};
+
+	return {
+		class: VisibleCondition,
+		factory: visible,
+		factoryName: 'visible',
+	};
 };

@@ -4,7 +4,7 @@ describe('VisibleCondition', () => {
 		await $('h1').shouldBe(visible());
 	});
 
-    it('should check if an element exists with the shortcut method shouldBeVisible', async () => {
+	it('should check if an element exists with the shortcut method shouldBeVisible', async () => {
 		await $.open('https://www.example.com');
 		await $('h1').shouldBeVisible();
 	});

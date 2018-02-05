@@ -4,7 +4,7 @@ describe('ExistCondition', () => {
 		await $('h1').should(exist());
 	});
 
-    it('should check if an element exists with the shortcut method shouldExist', async () => {
+	it('should check if an element exists with the shortcut method shouldExist', async () => {
 		await $.open('https://www.example.com');
 		await $('h1').shouldExist();
 	});
