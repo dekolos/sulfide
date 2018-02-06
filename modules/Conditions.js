@@ -27,11 +27,60 @@ module.exports = (Sulfide, SulfideElement) => {
 
 		async getDomElement(element) {
 			let domElement;
+			let baseElement;
+			let selector;
+			const parents = [...element.parents];
 			try {
+				if ( parents.length ) {
+					selector = parents.shift();
+					if ( selector.substr(0, 2) === '//' ) {
+						baseElement = await (await Sulfide.getFirstPage()).$x(element.xpath);
+					} else {
+						baseElement = await (await Sulfide.getFirstPage()).$(selector);
+					}
+					if ( Array.isArray(baseElement) ) {
+						if ( baseElement.length > 0 ) {
+							baseElement = domElement[0];
+						} else {
+							baseElement = null;
+						}
+					}
+					if ( !baseElement ) {
+						return null;
+					}
+				}
+
+				while ( parents.length ) {
+					selector = parents.shift();
+					if ( selector.substr(0, 2) === '//' ) {
+						baseElement = await baseElement.$x(element.xpath); // eslint-disable-line no-await-in-loop
+					} else {
+						baseElement = await baseElement.$(selector); // eslint-disable-line no-await-in-loop
+					}
+					if ( Array.isArray(baseElement) ) {
+						if ( baseElement.length > 0 ) {
+							baseElement = domElement[0];
+						} else {
+							baseElement = null;
+						}
+					}
+					if ( !baseElement ) {
+						return null;
+					}
+				}
+
 				if ( element.selector ) {
-					domElement = await (await Sulfide.getFirstPage()).$(element.selector);
+					if ( baseElement ) {
+						domElement = await baseElement.$(element.selector);
+					} else {
+						domElement = await (await Sulfide.getFirstPage()).$(element.selector);
+					}
 				} else if ( element.xpath ) {
-					domElement = await (await Sulfide.getFirstPage()).$x(element.xpath);
+					if ( baseElement ) {
+						domElement = await baseElement.$x(element.xpath);
+					} else {
+						domElement = await (await Sulfide.getFirstPage()).$x(element.xpath);
+					}
 				}
 			} catch (err) {
 				// console.log(err)

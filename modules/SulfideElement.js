@@ -14,6 +14,29 @@ module.exports = (Sulfide, Conditions) => (
 			} else {
 				this.selector = selectorOrXPath;
 			}
+
+			this.parents = [];
+		}
+
+		find(selector) {
+			const element = new SulfideElement('');
+			element.parents = [].concat(this.parents);
+			element.parents.push(this.selector || this.xpath);
+			if ( selector instanceof SulfideElement ) {
+				if ( selector.selector ) {
+					element.selector = selector.selector;
+				} else {
+					element.xpath = selector.xpath;
+				}
+			} else if ( typeof selector === 'string' ) {
+				if ( selector.substr(0, 2) === '//' ) {
+					element.xpath = selector;
+				} else {
+					element.selector = selector;
+				}
+			}
+
+			return element;
 		}
 
 		//**********************************************************************
