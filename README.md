@@ -14,6 +14,52 @@ It aims to make writing end-to-end tests for Chrome easy.
 
 It can work together with [Jasmine](https://jasmine.github.io/) to write tests in a well known format.
 
+#### Sulfide vs Puppeteer
+
+##### Puppeteer
+```
+const puppeteer = require('puppeteer');
+
+(async() => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+
+  await page.goto('https://developers.google.com/web/');
+
+  // Type into search box.
+  await page.type('#searchbox input', 'Headless Chrome');
+
+  // Wait for suggest overlay to appear and click "show all results".
+  const allResultsSelector = '.devsite-suggest-all-results';
+  await page.waitForSelector(allResultsSelector);
+  await page.click(allResultsSelector);
+
+  // Wait for the results page to load and display the results.
+  const resultsSelector = '.gsc-results .gsc-thumbnail-inside a.gs-title';
+  await page.waitForSelector(resultsSelector);
+})();
+```
+##### Sulfide
+```
+const sulfide = require('sulfide');
+
+(async() => {
+  await open('https://developers.google.com/web/');
+
+  // Type into search box.
+  await $('#searchbox input').sendKeys('Headless Chrome');
+
+  // Wait for suggest overlay to appear and click "show all results".
+  const allResultsSelector = '.devsite-suggest-all-results';
+  await $(allResultsSelector).should(exists());
+  await $(allResultsSelector).click();
+
+  // Wait for the results page to load and display the results.
+  const resultsSelector = '.gsc-results .gsc-thumbnail-inside a.gs-title';
+  await $(resultsSelector).should(exist());
+})();
+```
+
 #### Puppeteer/Sulfide vs Selenium/Selenide
 Selenide is a great library that makes working with [Selenium]() a lot more fun. But as much as we love Selenide, we would
 love it even more if we could write our tests in JavaScript that easy. So Sulfide tries to be for Puppeteer what Selenide
