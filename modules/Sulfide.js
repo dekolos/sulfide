@@ -3,7 +3,8 @@ const puppeteer = require('puppeteer');
 require('./String');
 
 const SulfideElement = require('./SulfideElement')(Sulfide);
-const Conditions = require('./Conditions')(Sulfide, SulfideElement);
+const SulfideElementCollection = require('./SulfideElementCollection')(Sulfide, SulfideElement);
+const Conditions = require('./Conditions')(Sulfide, SulfideElement, SulfideElementCollection);
 const Selectors = require('./Selectors')(Sulfide, SulfideElement);
 
 /**
@@ -29,6 +30,16 @@ function Sulfide(selector) {
 	}
 
 	return new SulfideElement(selector);
+}
+
+function $$(selector) {
+	if ( selector instanceof SulfideElement ) {
+		const collection = new SulfideElementCollection();
+		collection.selectors = [].concat(selector.selectors);
+		return collection;
+	}
+
+	return new SulfideElementCollection(selector);
 }
 
 /* eslint-disable no-magic-numbers */
@@ -149,6 +160,7 @@ for ( const selector in Selectors ) {
 // Add everything to the global namespace for easy usage
 if ( !Sulfide.config.noGlobals ) {
 	global.$ = Sulfide;
+	global.$$ = $$;
 
 	// Add the selectors
 	for ( const selector in Selectors ) {
