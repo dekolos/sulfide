@@ -4,7 +4,7 @@ describe('Child selectors', () => {
 		await $('body').find('div.header').should(exist());
 	});
 
-    it('finds a child with a css selector using the $ alias for find', async () => {
+	it('finds a child with a css selector using the $ alias for find', async () => {
 		await $.open('https://dekolos.github.io/sulfide/tests/todo/todo.html');
 		await $('body').$('div.header').should(exist());
 	});
@@ -19,7 +19,7 @@ describe('Child selectors', () => {
 		await $('body').find('div.header').find('h2').should(exist());
 	});
 
-	it('finds a child by chaining selector function', async () => {
+	it('finds a child by chaining and using a selector function', async () => {
 		await $.open('https://dekolos.github.io/sulfide/tests/todo/todo.html');
 		await $('body').find('div.header').find(byText('Sulfide Example To Do List')).should(exist());
 	});

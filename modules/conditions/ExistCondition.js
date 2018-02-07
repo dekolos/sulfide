@@ -22,7 +22,7 @@ module.exports = (Sulfide, SulfideElement, Condition) => {
 		 * @return {Promise} Resolves with true when the condition is met before the timout, false otherwise
 		 */
 		async test(element) {
-			const domElement = await this.getDomElement(element);
+			const domElement = await element.getDomElement();
 			return Boolean(domElement);
 		}
 	}

@@ -9,39 +9,58 @@ module.exports = (Sulfide, Conditions) => (
 		 * @param  {String} selectorOrXPath A CSS selector or an xpath
 		 */
 		constructor(selectorOrXPath) {
-			if ( selectorOrXPath.substr(0, 2) === '//' ) {
-				this.xpath = selectorOrXPath;
-			} else {
-				this.selector = selectorOrXPath;
+			this.selectors = [];
+
+			if ( selectorOrXPath ) {
+				this.selectors.push(selectorOrXPath);
+			}
+		}
+
+		async getDomElement() {
+			// Start with the page as base to find the element
+			let domElement = await Sulfide.getPage();
+			const selectors = [...this.selectors];
+
+			if ( selectors.length === 0 ) {
+				// An element without selectors does not exist
+				return null;
 			}
 
-			this.parents = [];
+			try {
+				while ( selectors.length ) {
+					const selector = selectors.shift();
+					if ( selector.isXPath() ) {
+						domElement = await domElement.$x(selector); // eslint-disable-line no-await-in-loop
+						domElement = domElement.length > 0 ? domElement[0] : null;
+					} else {
+						domElement = await domElement.$(selector); // eslint-disable-line no-await-in-loop
+					}
+					if ( !domElement ) {
+						return null;
+					}
+				}
+			} catch (err) {
+				// console.log(err)
+			}
+
+			return domElement;
 		}
 
 		/**
 		 * Finds the child of a SulfideElement. The child can be specified
 		 * with a selector, an xpath, or a SulfideElement (created by a
 		 * selector function)
-		 * @param {string|SulfideElement} selector A css selector, and xpath
+		 * @param {string|SulfideElement} selector A css selector, an xpath
 		 * or a SulfideElement created by a selector function.
 		 * @return {SulfideElement} A SulfideElement that represents the child.
 		 */
 		find(selector) {
-			const element = new SulfideElement('');
-			element.parents = [].concat(this.parents);
-			element.parents.push(this.selector || this.xpath);
+			const element = new SulfideElement();
+			element.selectors = [].concat(this.selectors);
 			if ( selector instanceof SulfideElement ) {
-				if ( selector.selector ) {
-					element.selector = selector.selector;
-				} else {
-					element.xpath = selector.xpath;
-				}
+				element.selectors = element.selectors.concat(selector.selectors);
 			} else if ( typeof selector === 'string' ) {
-				if ( selector.substr(0, 2) === '//' ) {
-					element.xpath = selector;
-				} else {
-					element.selector = selector;
-				}
+				element.selectors.push(selector);
 			}
 
 			return element;
@@ -58,7 +77,7 @@ module.exports = (Sulfide, Conditions) => (
 		}
 
 		//**********************************************************************
-		//*                            ASSERTIONS                              *
+		//*							ASSERTIONS							  *
 		//**********************************************************************
 
 		/**
@@ -117,7 +136,7 @@ module.exports = (Sulfide, Conditions) => (
 		}
 
 		//**********************************************************************
-		//*                             ACTIONS                                *
+		//*							 ACTIONS								*
 		//**********************************************************************
 
 		/**
@@ -128,8 +147,9 @@ module.exports = (Sulfide, Conditions) => (
 		 */
 		async sendKeys(text) {
 			await this.shouldExist();
+			const element = await this.getDomElement();
+			await element.focus();
 			const page = await Sulfide.getPage();
-			await page.focus(this.selector);
 			await page.keyboard.type(text);
 		}
 
@@ -137,7 +157,7 @@ module.exports = (Sulfide, Conditions) => (
 		/**
 		 * [sendKeysAndEnter description]
 		 * @param  {[type]}  text [description]
-		 * @return {Promise}      [description]
+		 * @return {Promise}	  [description]
 		 */
 		async sendKeysAndEnter(text) {
 			await this.sendKeys(text);
@@ -148,15 +168,8 @@ module.exports = (Sulfide, Conditions) => (
 		// Clicks the element
 		async click() {
 			await this.shouldExist();
-			const page = await Sulfide.getPage();
-			let el;
-			if ( this.selector ) {
-				el = await page.$(this.selector);
-				await el.click();
-			} else if ( this.xpath ) {
-				el = await page.$x(this.xpath);
-				await el[0].click();
-			}
+			const element = await this.getDomElement();
+			element.click();
 		}
 	}
 );

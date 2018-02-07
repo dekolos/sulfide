@@ -1,5 +1,7 @@
 const puppeteer = require('puppeteer');
 
+require('./String');
+
 const SulfideElement = require('./SulfideElement')(Sulfide);
 const Conditions = require('./Conditions')(Sulfide, SulfideElement);
 const Selectors = require('./Selectors')(Sulfide, SulfideElement);
