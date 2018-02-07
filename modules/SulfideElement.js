@@ -18,6 +18,14 @@ module.exports = (Sulfide, Conditions) => (
 			this.parents = [];
 		}
 
+		/**
+		 * Finds the child of a SulfideElement. The child can be specified
+		 * with a selector, an xpath, or a SulfideElement (created by a
+		 * selector function)
+		 * @param {string|SulfideElement} selector A css selector, and xpath
+		 * or a SulfideElement created by a selector function.
+		 * @return {SulfideElement} A SulfideElement that represents the child.
+		 */
 		find(selector) {
 			const element = new SulfideElement('');
 			element.parents = [].concat(this.parents);
@@ -37,6 +45,16 @@ module.exports = (Sulfide, Conditions) => (
 			}
 
 			return element;
+		}
+
+		/**
+		 * Alias for the find method
+		 * @param {string|SulfideElement} selector A css selector, and xpath
+		 * or a SulfideElement created by a selector function.
+		 * @return {SulfideElement} A SulfideElement that represents the child.
+		 */
+		$(selector) {
+			return this.find(selector);
 		}
 
 		//**********************************************************************
