@@ -21,7 +21,8 @@
 		"withTextCaseInsensitive": true,
 		"exist": true,
 		"visible": true,
-		"cssClass": true
+		"cssClass": true,
+		"length": true
 	},
 	"rules": {
 		"array-callback-return": "error",
@@ -47,7 +48,7 @@
 		"newline-before-return": "off",
 		"newline-per-chained-call": "off",
 
-		
+
 		"no-alert": "error",
 		"no-array-constructor": "error",
 		"no-await-in-loop": "error",

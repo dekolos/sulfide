@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-module.exports = (Sulfide, SulfideElement) => {
+module.exports = (Sulfide, SulfideElement, SulfideElementCollection) => {
 	/**
 	 * Base class for conditions.
 	 */
@@ -58,11 +58,18 @@ module.exports = (Sulfide, SulfideElement) => {
 		}
 	}
 
-	// Read the conditions from the condtions directory
-	const files = fs.readdirSync(__dirname + '/conditions');
+	// Read the conditions from the conditions directory
+	let files = fs.readdirSync(__dirname + '/conditions');
 	const factories = {};
 	files.forEach(file => {
 		const condition = require('./conditions/' + file)(Sulfide, SulfideElement, Condition); // eslint-disable-line global-require
+		factories[condition.factoryName] = condition.factory;
+	});
+
+	// Read the collection conditions from the collectionConditions directory
+	files = fs.readdirSync(__dirname + '/collectionConditions');
+	files.forEach(file => {
+		const condition = require('./collectionConditions/' + file)(Sulfide, SulfideElementCollection, Condition); // eslint-disable-line global-require
 		factories[condition.factoryName] = condition.factory;
 	});
 
