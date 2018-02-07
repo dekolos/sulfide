@@ -4,6 +4,11 @@ describe('Child selectors', () => {
 		await $('body').find('div.header').should(exist());
 	});
 
+    it('finds a child with a css selector using the $ alias for find', async () => {
+		await $.open('https://dekolos.github.io/sulfide/tests/todo/todo.html');
+		await $('body').$('div.header').should(exist());
+	});
+
 	it('finds a child with a selector function', async () => {
 		await $.open('https://dekolos.github.io/sulfide/tests/todo/todo.html');
 		await $('body').find(byText('Sulfide Example To Do List')).should(exist());
