@@ -15,14 +15,14 @@ module.exports = (Sulfide, SulfideElement, Condition) => {
 		 */
 		getFailureMessage(element, negate) {
 			if ( negate ) {
-				return 'Element ' + (element.selector || element.xpath) + ' is visible';
+				return 'Element ' + element.elementDescription + ' is visible';
 			}
 
 			if ( !this.elementExists ) {
-				return 'Element ' + (element.selector || element.xpath) + ' not found, so not visible';
+				return 'Element ' + element.elementDescription + ' not found, so not visible';
 			}
 
-			return 'Element ' + (element.selector || element.xpath) + ' is not visible';
+			return 'Element ' + element.elementDescription + ' is not visible';
 		}
 
 		/**

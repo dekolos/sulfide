@@ -6,7 +6,7 @@ module.exports = (Sulfide, SulfideElement) => ({
 	 */
 	byText: text => {
 		const xpath = '//*[text()="' + text + '"]';
-		return new SulfideElement(xpath);
+		return new SulfideElement(xpath, 'byText(\'' + text + '\')');
 	},
 
 	/**
@@ -16,7 +16,7 @@ module.exports = (Sulfide, SulfideElement) => ({
 	 */
 	withText: text => {
 		const xpath = '//*[contains(text(), "' + text + '")]';
-		return new SulfideElement(xpath);
+		return new SulfideElement(xpath, 'withText(\'' + text + '\')');
 	},
 
 	/**
@@ -26,7 +26,7 @@ module.exports = (Sulfide, SulfideElement) => ({
 	 */
 	byTextCaseInsensitive: text => {
 		const xpath = '//*[translate(text(), "' + text.toUpperCase() + '", "' + text.toLowerCase() + '")="' + text.toLowerCase() + '"]';
-		return new SulfideElement(xpath);
+		return new SulfideElement(xpath, 'byTextCaseInsensitive(\'' + text + '\')');
 	},
 
 	/**
@@ -36,7 +36,7 @@ module.exports = (Sulfide, SulfideElement) => ({
 	 */
 	withTextCaseInsensitive: text => {
 		const xpath = '//*//text()[contains(translate(., "' + text.toUpperCase() + '", "' + text.toLowerCase() + '"), "' + text.toLowerCase() + '")]';
-		return new SulfideElement(xpath);
+		return new SulfideElement(xpath, 'withTextCaseInsensitive(\'' + text + '\')');
 	},
 
 	/**
@@ -46,6 +46,6 @@ module.exports = (Sulfide, SulfideElement) => ({
 	 */
 	byValue: value => {
 		const xpath = '//*[@value="' + value + '"]';
-		return new SulfideElement(xpath);
+		return new SulfideElement(xpath, 'byValue(\'' + value + '\')');
 	},
 });

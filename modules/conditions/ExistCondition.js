@@ -10,10 +10,9 @@ module.exports = (Sulfide, SulfideElement, Condition) => {
 		 */
 		getFailureMessage(element, negate) {
 			if ( negate ) {
-				return 'Element ' + (element.selector || element.xpath) + ' is found';
+				return 'Element ' + element.elementDescription + ' is found';
 			}
-
-			return 'Element ' + (element.selector || element.xpath) + ' not found';
+			return 'Element ' + element.elementDescription + ' not found';
 		}
 
 		/**
