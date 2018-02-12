@@ -16,14 +16,14 @@ module.exports = (Sulfide, SulfideElement, Condition) => {
 		 */
 		getFailureMessage(element, negate) {
 			if ( negate ) {
-				return 'Element ' + (element.selector || element.xpath) + ' does have CSS class "' + this.cssClass + '""';
+				return 'Element ' + element.elementDescription + ' does have CSS class "' + this.cssClass + '""';
 			}
 
 			if ( !this.elementExists ) {
-				return 'Element ' + (element.selector || element.xpath) + ' not found, so does not have CSS class "' + this.cssClass + '""';
+				return 'Element ' + element.elementDescription + ' not found, so does not have CSS class "' + this.cssClass + '""';
 			}
 
-			return 'Element ' + (element.selector || element.xpath) + ' does not have CSS class "' + this.cssClass + '""';
+			return 'Element ' + element.elementDescription + ' does not have CSS class "' + this.cssClass + '""';
 		}
 
 		/**

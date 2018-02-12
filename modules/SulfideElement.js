@@ -6,20 +6,40 @@ module.exports = (Sulfide, Conditions) => (
 	class SulfideElement {
 		/**
 		 * Constructor
-		 * @param  {String} selectorOrXPath A CSS selector or an xpath
+		 * @param {String} selectorOrXPath A CSS selector or an xpath
+		 * @param {String} selectorDescription The description of the selector.
+		 * This should be set by selectors when creating a SulfideElement
 		 */
-		constructor(selectorOrXPath) {
+		constructor(selectorOrXPath, selectorDescription) {
 			this.selectors = [];
+			this.selectorDescriptions = [];
+			this.elementDescription = '';
 
-			if ( selectorOrXPath ) {
-				this.selectors.push(selectorOrXPath);
+			if ( !selectorOrXPath ) {
+				return;
+			}
+
+			this.selectors.push(selectorOrXPath);
+
+			if ( selectorOrXPath.isXPath() && selectorDescription ) {
+				this.selectorDescriptions.push(selectorDescription);
+			} else {
+				this.selectorDescriptions.push('$(\'' + selectorOrXPath + '\')');
 			}
 		}
 
+		/**
+		 * Tries to find the DOMElement specified by this SulfideElement.
+		 * @return {Promise} Resolves to DOMElement (JSHandle) when found, or
+		 * to null otherwise.
+		 */
 		async getDomElement() {
 			// Start with the page as base to find the element
 			let domElement = await Sulfide.getPage();
 			const selectors = [...this.selectors];
+			const selectorDescriptions = [...this.selectorDescriptions];
+			let selectorDescription = '';
+			this.elementDescription = '';
 
 			if ( selectors.length === 0 ) {
 				// An element without selectors does not exist
@@ -29,12 +49,17 @@ module.exports = (Sulfide, Conditions) => (
 			try {
 				while ( selectors.length ) {
 					const selector = selectors.shift();
+					if ( selectorDescription.length > 0 ) {
+						selectorDescription += '.';
+					}
+					selectorDescription += selectorDescriptions.shift();
 					if ( selector.isXPath() ) {
 						domElement = await domElement.$x(selector); // eslint-disable-line no-await-in-loop
 						domElement = domElement.length > 0 ? domElement[0] : null;
 					} else {
 						domElement = await domElement.$(selector); // eslint-disable-line no-await-in-loop
 					}
+					this.elementDescription = selectorDescription;
 					if ( !domElement ) {
 						return null;
 					}
@@ -52,15 +77,22 @@ module.exports = (Sulfide, Conditions) => (
 		 * selector function)
 		 * @param {string|SulfideElement} selector A css selector, an xpath
 		 * or a SulfideElement created by a selector function.
+		 * @param {string} The name of the function that was called. This name
+		 * will be used in the error message when an assertion fails. (Remember
+		 * that there are aliases for this function)
 		 * @return {SulfideElement} A SulfideElement that represents the child.
 		 */
-		find(selector) {
+		find(selector, fnName = 'find') {
 			const element = new SulfideElement();
 			element.selectors = [].concat(this.selectors);
+			element.selectorDescriptions = [].concat(this.selectorDescriptions);
 			if ( selector instanceof SulfideElement ) {
 				element.selectors = element.selectors.concat(selector.selectors);
+				element.selectorDescriptions = element.selectorDescriptions.concat(
+					fnName + '(' + selector.selectorDescriptions[0] + ')');
 			} else if ( typeof selector === 'string' ) {
 				element.selectors.push(selector);
+				element.selectorDescriptions.push(fnName + '(\'' + selector + '\')');
 			}
 
 			return element;
@@ -73,7 +105,7 @@ module.exports = (Sulfide, Conditions) => (
 		 * @return {SulfideElement} A SulfideElement that represents the child.
 		 */
 		$(selector) {
-			return this.find(selector);
+			return this.find(selector, '$');
 		}
 
 		//**********************************************************************
