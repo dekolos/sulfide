@@ -16,9 +16,11 @@
 	"homepage": "https://github.com/dekolos/sulfide",
 	"scripts": {
 		"test": "node tests/index.js",
-		"lint": "./node_modules/.bin/eslint '**/*.js'"
+		"lint": "./node_modules/.bin/eslint '**/*.js'",
+		"doxdox": "mkdir -p docs/api && ./node_modules/.bin/doxdox 'modules/**/*.js' --layout bootstrap --output docs/api/index.html && cp docs/images/favicon.ico docs/api"
 	},
 	"devDependencies": {
+		"doxdox": "^2.0.3",
 		"eslint": "^4.17.0",
 		"jasmine-console-reporter": "^2.0.1"
 	}
