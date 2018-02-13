@@ -188,8 +188,8 @@ module.exports = (Sulfide, Conditions) => (
 		// Focusses the element and uses the keyboard to enter a text followed by ENTER.
 		/**
 		 * [sendKeysAndEnter description]
-		 * @param  {[type]}  text [description]
-		 * @return {Promise}	  [description]
+		 * @param {String} text The text to type in the Element
+		 * @return {Promise} Resolves when the text + ENTER has been entered.
 		 */
 		async sendKeysAndEnter(text) {
 			await this.sendKeys(text);

@@ -134,12 +134,4 @@ The examples directory contains an example project that uses Sulfide together wi
 https://www.example.com.
 
 ## API
-The Sulfide API has four main parts, Sulfide, SulfideElement, selectors and conditions.
-
-### Sulfide
-
-### SulfideElement
-
-### Selectors
-
-### Conditions
+The latest Sulfide API documentation is published on [Sulfides Github pages](https://dekolos.github.io/sulfide/api/).
