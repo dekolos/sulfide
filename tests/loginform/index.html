@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Sulfide - example login page</title>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+        <link rel="icon" href="favicon.ico" type="image/x-icon">
+        <style type="text/css">
+            body {
+                padding: 0;
+                margin: 0;
+                background: #ddd;
+                font-family: sans-serif;
+                font-size: 16px;
+            }
+            #login-form {
+                width: 300px;
+                margin: auto;
+                border: 2px solid rgba(0, 0, 0, 1.0);
+                border-radius: 3px;
+                background: white;
+                margin-top: 100px;
+            }
+            #login-form .title {
+                padding: 12px;
+                font-size: 36px;
+            }
+            #login-form .body {
+                padding: 12px;
+            }
+            #login-form .line {
+                margin-bottom: 12px;
+            }
+            #login-form label {
+                float: left;
+                width: 90px;
+            }
+        </style>
+        <script>
+            window.onload = () => {
+                const form = document.getElementById('login-form');
+                form.addEventListener('submit', onSubmit);
+            }
+            function onSubmit(e) {
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                if ( username !== 'user1' || password !== 'user1password') {
+                    e.preventDefault();
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <form id="login-form" action="login-success.html" sonsubmit="onSubmit()">
+            <div class="title">Login</div>
+            <div class="body">
+                <div class="line">
+                    <label for="username">Username:</label><input id="username" name="username" placeholder="username" />
+                </div>
+                <div class="line">
+                    <label for="password">Password:</label><input type="password" id="password" name="password" placeholder="password" />
+                </div>
+                <input type="submit" value="Login" />
+            </div>
+        </form>
+    </body>
+</html>
