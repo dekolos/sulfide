@@ -41,6 +41,7 @@ module.exports = (Sulfide, SulfideElement, Condition) => {
 
 			this.elementExists = true;
 
+			/* istanbul ignore next */
 			const classString = await (await Sulfide.getPage()).evaluate(el => el.getAttribute('class'), domElement);
 			if ( !classString ) {
 				return false;
