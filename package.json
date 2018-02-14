@@ -7,6 +7,7 @@
 	"license": "AGPL-3.0",
 	"dependencies": {
 		"jasmine": "^2.9.0",
+		"nyc": "^11.4.1",
 		"puppeteer": "^1.0.0"
 	},
 	"repository": {
@@ -15,9 +16,17 @@
 	},
 	"homepage": "https://github.com/dekolos/sulfide",
 	"scripts": {
-		"test": "node tests/index.js",
-		"lint": "./node_modules/.bin/eslint '**/*.js'",
-		"doxdox": "mkdir -p docs/api && ./node_modules/.bin/doxdox 'modules/**/*.js' --layout bootstrap --output docs/api/index.html && cp docs/images/favicon.ico docs/api"
+		"test": "nyc --check-coverage --lines 80 node tests/index.js",
+		"lint": "eslint '**/*.js'",
+		"doxdox": "mkdir -p docs/api && doxdox 'modules/**/*.js' --layout bootstrap --output docs/api/index.html && cp docs/images/favicon.ico docs/api"
+	},
+	"nyc": {
+		"exclude": [
+			"node_modules",
+			"tests",
+			"coverage",
+			"docs"
+		]
 	},
 	"devDependencies": {
 		"doxdox": "^2.0.3",
