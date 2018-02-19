@@ -1,4 +1,6 @@
 const puppeteer = require('puppeteer');
+const {Target} = require('puppeteer/lib/Browser');
+const Page = require('puppeteer/lib/Page');
 
 require('./String');
 
@@ -16,8 +18,62 @@ let browser;
 /**
  * The url that will be used when launching the browser
  * Note: This variable will not be updated when opening another page.
+ * @type {string}
  */
 let launchUrl = '';
+
+/**
+ * Will keep references to the pages that are opened. The last one in this array will
+ * be the active page (i.e. the page on which actions are performed)
+ */
+const _pages = [];
+
+/**
+ * The options used for NWJS apps. These are the default options of puppeteer
+ * without the --disable-extensions options because NWJS runs as an extension.
+ * @type {Array}
+ */
+const NWJS_PUPPETEER_OPTIONS = [
+	'--disable-background-networking',
+	'--disable-background-timer-throttling',
+	'--disable-client-side-phishing-detection',
+	'--disable-default-apps',
+	//	'--disable-extensions',
+	'--disable-hang-monitor',
+	'--disable-popup-blocking',
+	'--disable-prompt-on-repost',
+	'--disable-sync',
+	'--disable-translate',
+	'--metrics-recording-only',
+	'--no-first-run',
+	'--safebrowsing-disable-auto-update',
+	'--enable-automation',
+	'--password-store=basic',
+	'--use-mock-keychain',
+	'--remote-debugging-port=0',
+];
+
+/* eslint-disable no-magic-numbers */
+// Default configuration
+const DEFAULT_CONFIG = {
+	noGlobals: false,
+	headless: true,
+	ignoreHTTPSErrors: true,
+	devtools: false,
+	width: 800,
+	height: 600,
+	disableInfobars: false,
+	chromeArgs: [],
+	// wait for 4 seconds by default when finding elements
+	implicitWaitTime: 4000,
+	// Sulfide will poll the page to find elements
+	pollInterval: 200,
+	// When running Sulfide with Jasmine, assertions can use jasmine assertions to fail tests
+	jasmine: false,
+	// When testing an app created with NWJS, set this to true
+	nwApp: false,
+};
+/* eslint-enable no-magic-numbers */
 
 /**
  * Main function of Sulfide. Acts as an SulfideElement creator.
@@ -41,26 +97,6 @@ function $$(selector) {
 
 	return new SulfideElementCollection(selector);
 }
-
-/* eslint-disable no-magic-numbers */
-// Default configuration
-const _DEFAULT_CONFIG_ = { // eslint-disable-line no-underscore-dangle
-	noGlobals: false,
-	headless: true,
-	ignoreHTTPSErrors: true,
-	devtools: false,
-	width: 800,
-	height: 600,
-	disableInfobars: false,
-	chromeArgs: [],
-	// wait for 4 seconds by default when finding elements
-	implicitWaitTime: 4000,
-	// Sulfide will poll the page to find elements
-	pollInterval: 200,
-	// When running Sulfide with Jasmine, assertions can use jasmine assertions to fail tests
-	jasmine: false,
-};
-/* eslint-enable no-magic-numbers */
 
 /**
  * Set the configuration that Sulfide will use when launching a browser
@@ -88,7 +124,7 @@ Sulfide.configure = config => {
 		));
 	}
 
-	Sulfide.config = Object.assign({}, _DEFAULT_CONFIG_);
+	Sulfide.config = Object.assign({}, DEFAULT_CONFIG);
 	for ( const k in config ) {
 		if ( __config.hasOwnProperty(k) ) {
 			Sulfide.config[k] = __config[k];
@@ -134,7 +170,16 @@ Sulfide.getBrowserLaunchOptions = () => {
 		options.args.push('--disable-infobars');
 	}
 
-	if ( launchUrl ) {
+	if ( Sulfide.config.nwApp ) {
+		options.executablePath = launchUrl;
+
+		// Now make sure puppeteer won't disable the extensions because NWJS runs as an extension
+		options.ignoreDefaultArgs = true;
+		options.args = options.args.concat(NWJS_PUPPETEER_OPTIONS);
+
+		// Make sure we can get Page Promises for Target objects when using NWJS
+		overridePuppeteer();
+	} else if ( launchUrl ) {
 		options.args.push('--app=' + launchUrl);
 	}
 
@@ -143,13 +188,44 @@ Sulfide.getBrowserLaunchOptions = () => {
 
 /**
  * Opens a browser if necessary and navigates to the given URL.
- * @param  {String} url Url of the page that will be navigated to.
+ * @param  {String} url Url of the page that will be navigated to, or (for NWJS apps)
+ * the location (full path) of nw.
  */
 Sulfide.open = async url => {
 	if ( !browser ) {
 		launchUrl = url;
 		const options = Sulfide.getBrowserLaunchOptions();
 		browser = await puppeteer.launch(options);
+	}
+
+	if ( Sulfide.config.nwApp ) {
+		return new Promise((resolve, reject) => {
+			// For NWJS apps we don't need to navigate to a page as NWJS will take care of that,
+			// but we must make sure we keep the references to any pages that are opened as we
+			//cannot get them from Puppeteer.
+			browser.on('targetchanged', async target => {
+				const targetUrl = target.url();
+				// _generated_background_page.html is the default page extensions open (NWJS in this case)
+				if ( targetUrl.indexOf('_generated_background_page.html') === -1 ) {
+					// Only add the page if we don't have it yet
+					if ( !_pages.some(p => p.target()._targetId === target._targetId) ) {
+						_pages.push(await target.page());
+					}
+				}
+				resolve();
+			});
+
+			// Remove a page from our page reference array when closed
+			browser.on('targetdestroyed', target => {
+				// Don't use filter here to keep the reference to our pages array a constant
+				const index = _pages.findIndex(p => p.target()._targetId === target._targetId);
+				if ( index === -1 ) {
+					// No page found in our array. Weird, shouldn't happen!
+					return;
+				}
+				_pages.splice(index,1 );
+			});
+		});
 	}
 
 	const page = await Sulfide.getPage();
@@ -161,9 +237,18 @@ Sulfide.open = async url => {
  * @return {Promise} Promise that will be resolved when the browser is closed
  */
 Sulfide.close = async () => {
+	// Wait a little because we might otherwise close too fast (yeah, it sucks)
+	await $.sleep(1500); // eslint-disable-line no-magic-numbers
 	await browser.close();
 	browser = null;
 };
+
+/**
+ * Returns the reference to the launched browser or null if
+ * no browser exists.
+ * @return {Browser} A reference to the browser instance
+ */
+Sulfide.getBrowser = () => browser;
 
 /**
  * Gets the current page. Will create a new page if there are no pages
@@ -175,7 +260,13 @@ Sulfide.getPage = async () => {
 		return null;
 	}
 
-	const pages = await browser.pages();
+	let pages = [];
+	if ( Sulfide.config.nwApp ) {
+		pages = _pages;
+	} else {
+		pages = await browser.pages();
+	}
+
 	if ( pages.length > 0 ) {
 		return pages[pages.length - 1];
 	}
@@ -190,24 +281,22 @@ Sulfide.getPage = async () => {
  * or to null when no browser exists.
  */
 Sulfide.newPage = async () => {
-	if ( !browser ) {
+	// We won't be creating pages for NWJS apps
+	if ( !browser || Sulfide.config.nwApp ) {
 		return null;
 	}
 
 	const page = await browser.newPage();
+	// Add it to our pages references. It will automatically be the active
+	// page because it will be the last one in the array.
+	_pages.push(page);
+
 	await page.setViewport({
 		width: Sulfide.config.width,
 		height: Sulfide.config.height,
 	});
 	return page;
 };
-
-/**
- * Returns the reference to the launched browser or null if
- * no browser exists.
- * @return {Browser} A reference to the browser instance
- */
-Sulfide.getBrowser = () => browser;
 
 /**
  * Returns all the pages opened in the browser.
@@ -217,8 +306,48 @@ Sulfide.getPages = async () => {
 	if ( !browser ) {
 		return [];
 	}
+
+	if ( Sulfide.config.nwApp ) {
+		return _pages;
+	}
+
 	return browser.pages();
 };
+
+/**
+ * Sets the active page.
+ * @param {Page|string} page The page that should be activated. Can be a Page instance or the url
+ * of the page that should be activated.
+ * @return {Page} The new page or null if the given page is not found.
+ */
+Sulfide.setPage = page => {
+	// We will only use pages that are opened
+	const pageOpened = _pages.some((p, i) => {
+		if (
+			(page instanceof Page && p.target()._targetId === page.target()._targetId) ||
+			(typeof page === 'string' && p.url().indexOf(page) > 0 && p.url().indexOf(page) + page.length === p.url().length)
+		) {
+			// Move the page to the end of our references array, so it will
+			// be used as active page
+			_pages.splice(i, 1);
+			_pages.push(p);
+			return true;
+		}
+
+		return false;
+	});
+
+	if ( !pageOpened ) {
+		return null;
+	}
+
+	return _pages[_pages.length - 1];
+};
+
+/**
+ * @alias Sulfide.setPage
+ */
+Sulfide.switchTo = Sulfide.setPage;
 
 // Add the selectors to Sulfide
 for ( const selector in Selectors ) {
@@ -248,3 +377,18 @@ if ( !Sulfide.config.noGlobals ) {
 }
 
 module.exports = Sulfide;
+
+/*
+ * Overrides the page method of the Target class to make sure that it is possible to get Page instances for NWJS apps.
+ */
+const overridePuppeteer = () => {
+	// This is the crucial part to get page objects for NWJS apps. Puppeteer will only check for type==='page', we will extend the check
+	// for NWJS apps.
+	Target.prototype.page = function pageSulfideOverride() {
+		if ( (this._targetInfo.type === 'page' || (Sulfide.config.nwApp && this._targetInfo.type === 'app' && this._targetInfo.url) ) && !this._pagePromise ) {
+			this._pagePromise = this._browser._connection.createSession(this._targetId)
+				.then(client => Page.create(client, this, this._browser._ignoreHTTPSErrors, this._browser._appMode, this._browser._screenshotTaskQueue));
+		}
+		return this._pagePromise;
+	};
+};
