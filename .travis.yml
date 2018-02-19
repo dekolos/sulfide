@@ -3,8 +3,11 @@ node_js: node
 install: yarn install
 before_script:
     - yarn run lint
+script:
     - yarn run test
-    - yarn run doxdox
+after_script:
+    - yarn run coveralls
+    - test $TRAVIS_BRANCH = "master" && yarn run doxdox
 deploy:
   provider: pages
   skip-cleanup: true
