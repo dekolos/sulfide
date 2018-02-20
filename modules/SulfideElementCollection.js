@@ -20,28 +20,24 @@ module.exports = (Sulfide, SulfideElement) => (
 				return [];
 			}
 
-			try {
-				while ( selectors.length ) {
-					const selector = selectors.shift();
-					if ( selector.isXPath() ) {
-						if ( selectors.length === 1 ) {
-							throw new Error('Collection selector cannot be an xpath');
-						}
-						domElement = await domElement.$x(selector); // eslint-disable-line no-await-in-loop
-						domElement = domElement.length > 0 ? domElement[0] : null;
-					} else if ( selectors.length === 0 ) {
-						// Last selector should be for a collection
-						domElement = await domElement.$$(selector); // eslint-disable-line no-await-in-loop
-					} else {
-						domElement = await domElement.$(selector); // eslint-disable-line no-await-in-loop
+			while ( selectors.length ) {
+				const selector = selectors.shift();
+				if ( selector.isXPath() ) {
+					if ( selectors.length === 0 ) {
+						throw new Error('Collection selector cannot be an xpath');
 					}
-
-					if ( !domElement ) {
-						return null;
-					}
+					domElement = await domElement.$x(selector); // eslint-disable-line no-await-in-loop
+					domElement = domElement.length > 0 ? domElement[0] : null;
+				} else if ( selectors.length === 0 ) {
+					// Last selector should be for a collection
+					domElement = await domElement.$$(selector); // eslint-disable-line no-await-in-loop
+				} else {
+					domElement = await domElement.$(selector); // eslint-disable-line no-await-in-loop
 				}
-			} catch (err) {
-				//console.log('Error:', err)
+
+				if ( !domElement ) {
+					return null;
+				}
 			}
 
 			return domElement;
