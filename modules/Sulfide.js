@@ -17,7 +17,7 @@ let browser;
  * Contains a reference to the active page
  * @type {Object}
  */
-let page;
+//let page;
 
 /**
  * Main function of Sulfide. Acts as an SulfideElement creator.
@@ -77,6 +77,14 @@ Sulfide.configure = config => {
 	return Sulfide.config;
 };
 
+/**
+ * Can be used to sleep the execution of a async function. Usage:
+ *
+ * await $.sleep(5000); // Sleep for 5 seconds
+ *
+ * @param  {number} timeout The sleep time in milliseconds
+ * @return {Promise} Resolves after timeout milliseconds
+ */
 Sulfide.sleep = timeout => new Promise(resolve => {
 	setTimeout(() => resolve(), timeout);
 });
@@ -101,17 +109,7 @@ Sulfide.open = async url => {
 		});
 	}
 
-	if ( !page ) {
-		page = await Sulfide.getPage();
-		page.on('framenavigated', async () => {
-			page = await Sulfide.getFirstPage();
-		});
-		await page.setViewport({
-			width: Sulfide.config.width,
-			height: Sulfide.config.height,
-		});
-	}
-
+	const page = await Sulfide.getPage();
 	await page.goto(url, {waitUntil: 'load'});
 };
 
@@ -122,32 +120,61 @@ Sulfide.open = async url => {
 Sulfide.close = async () => {
 	await browser.close();
 	browser = null;
-	page = null;
 };
 
 /**
- * Gets the first open page. Will open a page if none is opened yet
- * @return {Promise} Promise will resolve with a reference to the page .
- */
-Sulfide.getFirstPage = async () => {
-	const pages = await browser.pages();
-	if ( pages ) {
-		return pages[0];
-	}
-
-	return browser.newPage();
-};
-
-/**
- * Gets the current page, or the first if none is active yet.
+ * Gets the current page. Will create a new page if there are no pages
+ * and the browser has been launched.
  * @return {Promise} Promise will resolve with a reference to the page.
  */
 Sulfide.getPage = async () => {
-	if ( !page ) {
-		page = await Sulfide.getFirstPage();
+	if ( !browser ) {
+		return null;
 	}
 
+	const pages = await browser.pages();
+	if ( pages.length > 0 ) {
+		return pages[pages.length - 1];
+	}
+
+	const page = await Sulfide.newPage();
 	return page;
+};
+
+/**
+ * Creates a new page when the browser has been launched
+ * @return {Promise} Resolves to a reference to the new page,
+ * or to null when no browser exists.
+ */
+Sulfide.newPage = async () => {
+	if ( !browser ) {
+		return null;
+	}
+
+	const page = await browser.newPage();
+	await page.setViewport({
+		width: Sulfide.config.width,
+		height: Sulfide.config.height,
+	});
+	return page;
+};
+
+/**
+ * Returns the reference to the launched browser or null if
+ * no browser exists.
+ * @return {Browser} A reference to the browser instance
+ */
+Sulfide.getBrowser = () => browser;
+
+/**
+ * Returns all the pages opened in the browser.
+ * @return {Promise} Will resolve with an array of all opened pages
+ */
+Sulfide.getPages = async () => {
+	if ( !browser ) {
+		return [];
+	}
+	return browser.pages();
 };
 
 // Add the selectors to Sulfide

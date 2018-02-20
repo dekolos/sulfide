@@ -1337,6 +1337,10 @@ jasmine-core@~2.9.0:
   version "2.9.1"
   resolved "https://registry.yarnpkg.com/jasmine-core/-/jasmine-core-2.9.1.tgz#b6bbc1d8e65250d56f5888461705ebeeeb88f22f"
 
+jasmine-should-fail@^1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/jasmine-should-fail/-/jasmine-should-fail-1.1.6.tgz#b4f676213b4bee7786ce3a05015d026d345d8489"
+
 jasmine@^2.9.0:
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/jasmine/-/jasmine-2.9.0.tgz#76571f925c8783409e7c6153572e5a6341cf93eb"

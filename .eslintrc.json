@@ -13,6 +13,8 @@
 		"jasmine": true
 	},
 	"globals": {
+		"zit": true,
+		"zdescribe": true,
 		"$": true,
 		"$$": true,
 		"byText": true,

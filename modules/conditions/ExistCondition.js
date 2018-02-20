@@ -8,7 +8,7 @@ module.exports = (Sulfide, SulfideElement, Condition) => {
 		 * @param  {SulfideElement} element The element for which the condition will be tested
 		 * @return {String} The failure message for this condition
 		 */
-		getFailureMessage(element, negate) {
+		getFailureMessage(element, negate) { // eslint-disable-line class-methods-use-this
 			if ( negate ) {
 				return 'Element ' + element.elementDescription + ' is found';
 			}
@@ -20,7 +20,7 @@ module.exports = (Sulfide, SulfideElement, Condition) => {
 		 * @param  {SulfideElement} element The element for which the condition will be tested
 		 * @return {Promise} Resolves with true when the condition is met before the timout, false otherwise
 		 */
-		async test(element) {
+		async test(element) { // eslint-disable-line class-methods-use-this
 			const domElement = await element.getDomElement();
 			return Boolean(domElement);
 		}

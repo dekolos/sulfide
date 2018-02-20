@@ -7,6 +7,7 @@ jasmine.loadConfig({
 	spec_dir: specsDir,
 	spec_files: [
 		'**/*.js',
+		//'**/testSulfide.js',
 	],
 	stopSpecOnExpectationFailure: false,
 });
@@ -32,9 +33,12 @@ Sulfide.configure({
 	width: 1200,
 	height: 800,
 	disableInfobars: false,
+	headless: true,
 });
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000; // 20 seconds
+//jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000; // 20 seconds
 /* eslint-enable no-magic-numbers */
+
+require('jasmine-should-fail');
 
 // Execute the tests
 jasmine.execute();

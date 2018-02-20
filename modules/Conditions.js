@@ -17,11 +17,13 @@ module.exports = (Sulfide, SulfideElement, SulfideElementCollection) => {
 		 * @param  {SulfideElement} element The element for which the condition will be tested
 		 * @return {Boolean} True if the condition is met for the given element, false otherwise.
 		 */
-		async test(element) {
+		async test(element) { // eslint-disable-line class-methods-use-this
+			/* istanbul ignore next */
 			return false;
 		}
 
-		getFailureMessage(element) {
+		getFailureMessage(element) { // eslint-disable-line class-methods-use-this
+			/* istanbul ignore next */
 			return 'Condition not met';
 		}
 
@@ -33,7 +35,14 @@ module.exports = (Sulfide, SulfideElement, SulfideElementCollection) => {
 			// and also the timeout doesn't work in waitForSelector
 			// so we must implement our own polling function
 			const poll = async (resolve, reject) => {
-				const conditionMet = await this.test(element);
+				let conditionMet;
+				try {
+					conditionMet = await this.test(element);
+				} catch (err) {
+					reject(err);
+					return false;
+				}
+
 				if ( (conditionMet && !negate) || (!conditionMet && negate) ) {
 					resolve(true);
 					return true;

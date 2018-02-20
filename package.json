@@ -16,7 +16,8 @@
 	},
 	"homepage": "https://github.com/dekolos/sulfide",
 	"scripts": {
-		"test": "nyc --check-coverage --lines 0 --reporter=lcov --reporter=text node tests/index.js",
+		"test": "nyc --check-coverage --lines 0 --reporter=lcov --reporter=text --reporter=html node tests/index.js",
+		"testnocov": "node tests/index.js",
 		"coveralls": "cat ./coverage/lcov.info | coveralls",
 		"lint": "eslint '**/*.js'",
 		"doxdox": "mkdir -p docs/api && doxdox 'modules/**/*.js' --layout bootstrap --output docs/api/index.html && cp docs/images/favicon.ico docs/api"
@@ -33,6 +34,7 @@
 		"coveralls": "^3.0.0",
 		"doxdox": "^2.0.3",
 		"eslint": "^4.17.0",
-		"jasmine-console-reporter": "^2.0.1"
+		"jasmine-console-reporter": "^2.0.1",
+		"jasmine-should-fail": "^1.1.6"
 	}
 }
