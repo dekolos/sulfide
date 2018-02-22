@@ -7,7 +7,7 @@ script:
     - yarn run test
 after_script:
     - yarn run coveralls
-    - yarn run doxdox
+    - yarn run doxdox && ls -l docs/api
 deploy:
   provider: pages
   skip-cleanup: true
