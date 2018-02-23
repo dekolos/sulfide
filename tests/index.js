@@ -6,8 +6,11 @@ const jasmine = new Jasmine();
 jasmine.loadConfig({
 	spec_dir: specsDir,
 	spec_files: [
-		'**/*.js',
+		'**/test*.js',
 		//'**/testSulfide.js',
+	],
+	helpers: [
+		'helpers/*.js',
 	],
 	stopSpecOnExpectationFailure: false,
 });
@@ -35,7 +38,6 @@ Sulfide.configure({
 	disableInfobars: false,
 	headless: true,
 });
-//jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000; // 20 seconds
 /* eslint-enable no-magic-numbers */
 
 require('jasmine-should-fail');
