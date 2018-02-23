@@ -14,10 +14,10 @@ const Selectors = require('./Selectors')(Sulfide, SulfideElement);
 let browser;
 
 /**
- * Contains a reference to the active page
- * @type {Object}
+ * The url that will be used when launching the browser
+ * Note: This variable will not be updated when opening another page.
  */
-//let page;
+let launchUrl = '';
 
 /**
  * Main function of Sulfide. Acts as an SulfideElement creator.
@@ -44,7 +44,7 @@ function $$(selector) {
 
 /* eslint-disable no-magic-numbers */
 // Default configuration
-Sulfide.config = {
+const _DEFAULT_CONFIG_ = { // eslint-disable-line no-underscore-dangle
 	noGlobals: false,
 	headless: true,
 	ignoreHTTPSErrors: true,
@@ -52,6 +52,7 @@ Sulfide.config = {
 	width: 800,
 	height: 600,
 	disableInfobars: false,
+	chromeArgs: [],
 	// wait for 4 seconds by default when finding elements
 	implicitWaitTime: 4000,
 	// Sulfide will poll the page to find elements
@@ -68,14 +69,37 @@ Sulfide.config = {
  * config.
  */
 Sulfide.configure = config => {
+	// Immutability
+	const __config = Object.assign({}, config); // eslint-disable-line no-underscore-dangle
+
+	if ( __config.chromeArgs ) {
+		if ( !Array.isArray(__config.chromeArgs) ) {
+			throw new Error('chromeArgs should be an array of strings');
+		}
+
+		// immutability by using filter
+		__config.chromeArgs = __config.chromeArgs.filter(arg => (
+			typeof arg === 'string' &&
+			arg.trim().indexOf('--no-sandbox') !== 0 &&
+			arg.trim().indexOf('--disable-setuid-sandbox') !== 0 &&
+			arg.trim().indexOf('--window-size') !== 0 &&
+			arg.trim().indexOf('--disable-infobars') !== 0 &&
+			arg.trim().indexOf('--app') !== 0
+		));
+	}
+
+	Sulfide.config = Object.assign({}, _DEFAULT_CONFIG_);
 	for ( const k in config ) {
-		if ( config.hasOwnProperty(k) ) {
-			Sulfide.config[k] = config[k];
+		if ( __config.hasOwnProperty(k) ) {
+			Sulfide.config[k] = __config[k];
 		}
 	}
 
 	return Sulfide.config;
 };
+
+// Set the default configuration
+Sulfide.configure({});
 
 /**
  * Can be used to sleep the execution of a async function. Usage:
@@ -90,23 +114,42 @@ Sulfide.sleep = timeout => new Promise(resolve => {
 });
 
 /**
+ * Creates the options object that is used to launch Chromium
+ * @return {Object} The options that are used to launch Chromium through Puppeteer
+ */
+Sulfide.getBrowserLaunchOptions = () => {
+	const options = {
+		headless: Sulfide.config.headless,
+		ignoreHTTPSErrors: Sulfide.config.ignoreHTTPSErrors,
+		devtools: Sulfide.config.devtools,
+		args: [
+			'--no-sandbox',
+			'--disable-setuid-sandbox',
+			'--window-size=' + Sulfide.config.width + ',' + Sulfide.config.height,
+			...Sulfide.config.chromeArgs,
+		],
+	};
+
+	if ( Sulfide.config.disableInfobars ) {
+		options.args.push('--disable-infobars');
+	}
+
+	if ( launchUrl ) {
+		options.args.push('--app=' + launchUrl);
+	}
+
+	return options;
+};
+
+/**
  * Opens a browser if necessary and navigates to the given URL.
- * @param  {String} url Url of the page that will be tested.
+ * @param  {String} url Url of the page that will be navigated to.
  */
 Sulfide.open = async url => {
 	if ( !browser ) {
-		browser = await puppeteer.launch({
-			headless: Sulfide.config.headless,
-			ignoreHTTPSErrors: Sulfide.config.ignoreHTTPSErrors,
-			devtools: Sulfide.config.devtools,
-			args: [
-				'--no-sandbox',
-				'--disable-setuid-sandbox',
-				'--window-size=' + Sulfide.config.width + ',' + Sulfide.config.height,
-				Sulfide.config.disableInfobars ? '--disable-infobars' : '',
-				'--app=' + url,
-			],
-		});
+		launchUrl = url;
+		const options = Sulfide.getBrowserLaunchOptions();
+		browser = await puppeteer.launch(options);
 	}
 
 	const page = await Sulfide.getPage();

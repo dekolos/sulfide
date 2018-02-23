@@ -43,7 +43,7 @@
 		"guard-for-in": "error",
 		"indent": ["error", "tab", {"SwitchCase": 1}],
 		"max-lines": ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}],
-		"max-nested-callbacks": ["warn", {"max":2}],
+		"max-nested-callbacks": ["warn", {"max":4}],
 		"max-statements-per-line": ["error", {"max": 1}],
 		"multiline-ternary": ["warn", "never"],
 		"new-cap": "error",
