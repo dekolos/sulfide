@@ -321,6 +321,11 @@ input[type="search"]::-webkit-search-cancel-button {
 
 
                         <li class="method-link scope-public">
+                            <a href="#modules-sulfide.js-launchurl" title="launchUrl">launchUrl</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
                             <a href="#modules-sulfide.js-sulfide" title="Sulfide">Sulfide</a>
                         </li>
 
@@ -332,6 +337,11 @@ input[type="search"]::-webkit-search-cancel-button {
 
                         <li class="method-link scope-public">
                             <a href="#modules-sulfide.js-sulfide.sleep" title="Sulfide.sleep">Sulfide.sleep</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#modules-sulfide.js-sulfide.getbrowserlaunchoptions" title="Sulfide.getBrowserLaunchOptions">Sulfide.getBrowserLaunchOptions</a>
                         </li>
 
 
@@ -1250,6 +1260,37 @@ of elements on the page.</p>
 
                     <div class="method scope-public">
 
+                        <h2 id="modules-sulfide.js-launchurl">
+                            <a href="#modules-sulfide.js-launchurl" class="permalink">#</a>
+                            <span class="method-name" title="launchUrl()">launchUrl()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>The url that will be used when launching the browser
+Note: This variable will not be updated when opening another page.</p>
+
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
                         <h2 id="modules-sulfide.js-sulfide">
                             <a href="#modules-sulfide.js-sulfide" class="permalink">#</a>
                             <span class="method-name" title="Sulfide(selector)">Sulfide(selector)</span>
@@ -1468,6 +1509,43 @@ of elements on the page.</p>
 
                     <div class="method scope-public">
 
+                        <h2 id="modules-sulfide.js-sulfide.getbrowserlaunchoptions">
+                            <a href="#modules-sulfide.js-sulfide.getbrowserlaunchoptions" class="permalink">#</a>
+                            <span class="method-name" title="Sulfide.getBrowserLaunchOptions()">Sulfide.getBrowserLaunchOptions()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Creates the options object that is used to launch Chromium</p>
+
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Object</code>
+                                    </p>
+
+                                    <p>The options that are used to launch Chromium through Puppeteer</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
                         <h2 id="modules-sulfide.js-sulfide.open">
                             <a href="#modules-sulfide.js-sulfide.open" class="permalink">#</a>
                             <span class="method-name" title="Sulfide.open(url)">Sulfide.open(url)</span>
@@ -1503,7 +1581,7 @@ of elements on the page.</p>
                                         <td>
                                             <code>String</code>
                                         </td>
-                                        <td><p>Url of the page that will be tested.</p>
+                                        <td><p>Url of the page that will be navigated to.</p>
 </td>
                                         <td>
                                         </td>
