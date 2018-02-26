@@ -130,9 +130,54 @@ Sulfide will poll the page to see if conditions are met. This tells Sulfide how 
 **jasmine** (_default value: false_)<br/>
 When testing with Jasmine Sulfide can make specs fail when a condition check fails.
 
+**nwApp** (_default value: false_)<br/>
+Set this to true if you want to test an NWJS app with Sulfide. The $.open() method needs to be called with the path to
+the nw executable as parameter.
+
+#### Launching a browser and navigate to a certain page
+```
+require('sulfide');
+
+// The first time $.open() is called, it will launch the browser
+await $.open(<URL-OF-THE-PAGE-YOU-WANT-TO-NAVIGATE-TO>);
+
+// Do some check to know that the page is fully loaded
+await $('body').shouldHave(cssClass('main-page'));
+
+// Navigate to another page. $.open() will not launch a new browser but use the one we launched before.
+await $.open(<ANOTHER-URL>);
+
+// Do some check to know that the page is fully loaded
+await $('body').shouldHave(cssClass('another-page'));
+
+// Click on an element
+await $('#a-cool-button').click();
+```
+
 ## Examples
-The examples directory contains an example project that uses Sulfide together with Jasmine. It runs some simple tests on
-https://www.example.com.
+Sulfide is tested by using itself. To see how to use Sulfide in Jasmine tests just take a look at the code in the
+[tests]() directory.
+
+## NWJS apps (EXPERIMENTAL)
+Puppeteer requires Chromium 65+, so to test [NWJS](https://nwjs.io/) apps you must build your app with the (yet) unstable
+v0.29.0. Instead of the URL of a page that you want to open, you should pass the path to your NWJS app as a parameter to
+the Sulfide.open method:
+
+```
+require('sulfide');
+
+// Open the app
+await $.open('<PATH_TO_YOUR_NWJS_APP'>);
+
+// Wait until the app is loaded by checking if the body element of the active page has the 'my-page' class.
+// You probably have other ways to check if you app is loaded.
+await $('body').shouldHave(cssClass('my-page'));
+
+// Store a reference to our page, so we can activate it later if necessary.
+// NOTE: Sulfide will activate a newly opened page automatically. This means that all operations will target
+// that page.
+const mainPage = $.getPage();
+```
 
 ## API
 The latest Sulfide API documentation is published on [Sulfides Github pages](https://dekolos.github.io/sulfide/api/).
