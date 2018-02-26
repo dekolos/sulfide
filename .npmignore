@@ -1,1 +1,5 @@
-examples
+yarn-error.log
+docs/api
+.nyc_output
+coverage
+tests

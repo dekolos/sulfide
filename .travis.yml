@@ -5,15 +5,22 @@ before_script:
     - yarn run lint
 script:
     - yarn run test
-after_success:
+before_deploy:
     - yarn run doxdox && ls -l docs/api
 deploy:
-  provider: pages
-  skip-cleanup: true
-  github-token: $GH_TOKEN  # Set in travis-ci.org dashboard, marked secure
-  keep-history: true
-  local-dir: docs
-  on:
-    branch: master
+  - provider: pages
+    skip-cleanup: true
+    github-token: $GH_TOKEN  # Set in travis-ci.org dashboard, marked secure
+    keep-history: true
+    local-dir: docs
+    on:
+      tags: true
+      branch: master
+  - provider: npm
+    email: ronaldtoussaint@gmail.com
+    api_key: $NPM_TOKEN
+    on:
+      tags: true
+      branch: master
 after_script:
     - yarn run coveralls
