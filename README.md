@@ -6,7 +6,7 @@
 
 ![Sulfide](https://dekolos.github.io/sulfide/images/logo.png "Sulfide")
 # Sulfide
-[![npm version](https://badge.fury.io/js/sulfide.svg)](https://badge.fury.io/js/sulfide)
+[![npm version](https://badge.fury.io/js/sulfide.svg)](https://www.npmjs.com/package/sulfide)
 [![Build Status](https://travis-ci.org/dekolos/sulfide.svg?branch=master)](https://travis-ci.org/dekolos/sulfide)
 [![Coverage Status](https://coveralls.io/repos/github/dekolos/sulfide/badge.svg?branch=master)](https://coveralls.io/github/dekolos/sulfide?branch=master)
 
