@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="initial-scale=1">
-<title>sulfide 0.1.0 &#8212; Sulfide is a Selenide inspired library that can be used to simplify testing with Puppeteer.</title>
+<title>sulfide 0.2.0 &#8212; Sulfide is a Selenide inspired library that can be used to simplify testing with Puppeteer.</title>
 <meta name="description" content="Sulfide is a Selenide inspired library that can be used to simplify testing with Puppeteer.">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
@@ -163,7 +163,7 @@ input[type="search"]::-webkit-search-cancel-button {
 
         <h1>
                 <a href="https://github.com/dekolos/sulfide">sulfide</a>
-            <small>0.1.0</small>
+            <small>0.2.0</small>
         </h1>
 
         <p>Sulfide is a Selenide inspired library that can be used to simplify testing with Puppeteer.</p>
@@ -326,6 +326,16 @@ input[type="search"]::-webkit-search-cancel-button {
 
 
                         <li class="method-link scope-public">
+                            <a href="#modules-sulfide.js-_pages" title="_pages">_pages</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#modules-sulfide.js-nwjs_puppeteer_options" title="NWJS_PUPPETEER_OPTIONS">NWJS_PUPPETEER_OPTIONS</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
                             <a href="#modules-sulfide.js-sulfide" title="Sulfide">Sulfide</a>
                         </li>
 
@@ -356,6 +366,11 @@ input[type="search"]::-webkit-search-cancel-button {
 
 
                         <li class="method-link scope-public">
+                            <a href="#modules-sulfide.js-sulfide.getbrowser" title="Sulfide.getBrowser">Sulfide.getBrowser</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
                             <a href="#modules-sulfide.js-sulfide.getpage" title="Sulfide.getPage">Sulfide.getPage</a>
                         </li>
 
@@ -366,12 +381,17 @@ input[type="search"]::-webkit-search-cancel-button {
 
 
                         <li class="method-link scope-public">
-                            <a href="#modules-sulfide.js-sulfide.getbrowser" title="Sulfide.getBrowser">Sulfide.getBrowser</a>
+                            <a href="#modules-sulfide.js-sulfide.getpages" title="Sulfide.getPages">Sulfide.getPages</a>
                         </li>
 
 
                         <li class="method-link scope-public">
-                            <a href="#modules-sulfide.js-sulfide.getpages" title="Sulfide.getPages">Sulfide.getPages</a>
+                            <a href="#modules-sulfide.js-sulfide.setpage" title="Sulfide.setPage">Sulfide.setPage</a>
+                        </li>
+
+
+                        <li class="method-link scope-public">
+                            <a href="#modules-sulfide.js-sulfide.switchto" title="Sulfide.switchTo">Sulfide.switchTo</a>
                         </li>
 
 
@@ -1291,6 +1311,68 @@ Note: This variable will not be updated when opening another page.</p>
 
                     <div class="method scope-public">
 
+                        <h2 id="modules-sulfide.js-_pages">
+                            <a href="#modules-sulfide.js-_pages" class="permalink">#</a>
+                            <span class="method-name" title="_pages()">_pages()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Will keep references to the pages that are opened. The last one in this array will
+be the active page (i.e. the page on which actions are performed)</p>
+
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="modules-sulfide.js-nwjs_puppeteer_options">
+                            <a href="#modules-sulfide.js-nwjs_puppeteer_options" class="permalink">#</a>
+                            <span class="method-name" title="NWJS_PUPPETEER_OPTIONS()">NWJS_PUPPETEER_OPTIONS()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>The options used for NWJS apps. These are the default options of puppeteer
+without the --disable-extensions options because NWJS runs as an extension.</p>
+
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
                         <h2 id="modules-sulfide.js-sulfide">
                             <a href="#modules-sulfide.js-sulfide" class="permalink">#</a>
                             <span class="method-name" title="Sulfide(selector)">Sulfide(selector)</span>
@@ -1581,7 +1663,7 @@ Note: This variable will not be updated when opening another page.</p>
                                         <td>
                                             <code>String</code>
                                         </td>
-                                        <td><p>Url of the page that will be navigated to.</p>
+                                        <td><p>Url of the page that will be navigated to, or (for NWJS apps) the location (full path) of nw.</p>
 </td>
                                         <td>
                                         </td>
@@ -1637,6 +1719,44 @@ Note: This variable will not be updated when opening another page.</p>
                                     </p>
 
                                     <p>Promise that will be resolved when the browser is closed</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="modules-sulfide.js-sulfide.getbrowser">
+                            <a href="#modules-sulfide.js-sulfide.getbrowser" class="permalink">#</a>
+                            <span class="method-name" title="Sulfide.getBrowser()">Sulfide.getBrowser()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Returns the reference to the launched browser or null if
+no browser exists.</p>
+
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Browser</code>
+                                    </p>
+
+                                    <p>A reference to the browser instance</p>
 
 
 
@@ -1723,44 +1843,6 @@ and the browser has been launched.</p>
 
                     <div class="method scope-public">
 
-                        <h2 id="modules-sulfide.js-sulfide.getbrowser">
-                            <a href="#modules-sulfide.js-sulfide.getbrowser" class="permalink">#</a>
-                            <span class="method-name" title="Sulfide.getBrowser()">Sulfide.getBrowser()</span>
-                        </h2>
-
-                        <div class="description lead">
-
-                            <p>Returns the reference to the launched browser or null if
-no browser exists.</p>
-
-
-                        </div>
-
-
-
-
-                        <section class="returns">
-
-                            <h3>Returns</h3>
-
-
-
-                                    <p>
-                                            <code>Browser</code>
-                                    </p>
-
-                                    <p>A reference to the browser instance</p>
-
-
-
-
-                        </section>
-
-                    </div>
-
-
-                    <div class="method scope-public">
-
                         <h2 id="modules-sulfide.js-sulfide.getpages">
                             <a href="#modules-sulfide.js-sulfide.getpages" class="permalink">#</a>
                             <span class="method-name" title="Sulfide.getPages()">Sulfide.getPages()</span>
@@ -1789,6 +1871,108 @@ no browser exists.</p>
                                     <p>Will resolve with an array of all opened pages</p>
 
 
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="modules-sulfide.js-sulfide.setpage">
+                            <a href="#modules-sulfide.js-sulfide.setpage" class="permalink">#</a>
+                            <span class="method-name" title="Sulfide.setPage(page)">Sulfide.setPage(page)</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            <p>Sets the active page.</p>
+
+
+                        </div>
+
+
+                        <section class="parameters">
+
+                            <h3>Parameters</h3>
+
+                            <div class="table-responsive">
+                                <table class="table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <tr>
+                                        <td>page</td>
+                                        <td>
+                                            <code>Page</code>
+                                            <code>string</code>
+                                        </td>
+                                        <td><p>The page that should be activated. Can be a Page instance or the url of the page that should be activated.</p>
+</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </section>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+
+                                    <p>
+                                            <code>Page</code>
+                                    </p>
+
+                                    <p>The new page or null if the given page is not found.</p>
+
+
+
+
+                        </section>
+
+                    </div>
+
+
+                    <div class="method scope-public">
+
+                        <h2 id="modules-sulfide.js-sulfide.switchto">
+                            <a href="#modules-sulfide.js-sulfide.switchto" class="permalink">#</a>
+                            <span class="method-name" title="Sulfide.switchTo()">Sulfide.switchTo()</span>
+                        </h2>
+
+                        <div class="description lead">
+
+                            
+
+                        </div>
+
+
+
+
+                        <section class="returns">
+
+                            <h3>Returns</h3>
+
+
+                            <p><code>Void</code></p>
 
 
                         </section>
