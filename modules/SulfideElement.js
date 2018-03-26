@@ -203,5 +203,46 @@ module.exports = (Sulfide, Conditions) => (
 			const element = await this.getDomElement();
 			element.click();
 		}
+
+		/**
+		 * Sets the value of the element to ''.
+		 */
+		async clear() {
+			await this.shouldExist();
+			const element = await this.getDomElement();
+			const ec = element.executionContext();
+			/* istanbul ignore next */
+			await ec.evaluate(el => {
+				el.value = '';
+			}, element);
+		}
+
+		/**
+		 * Returns the attribute value of the element
+		 * @param {String} attr the attribute which value is requested
+		 */
+		async getAttribute(attr) {
+			await this.shouldExist();
+			const element = await this.getDomElement();
+			const ec = element.executionContext();
+			/* istanbul ignore next */
+			const result = await ec.evaluate((el, a) => el.getAttribute(a), element, attr);
+
+			return result;
+		}
+
+		/**
+		 * Returns the value of the element
+		 * @return {Promise} Resolves to the value of the element.
+		 */
+		async getValue() {
+			await this.shouldExist();
+			const element = await this.getDomElement();
+			const ec = element.executionContext();
+			/* istanbul ignore next */
+			const value = await ec.evaluate(el => el.value, element);
+
+			return value;
+		}
 	}
 );
