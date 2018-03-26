@@ -7,7 +7,7 @@ jasmine.loadConfig({
 	spec_dir: specsDir,
 	spec_files: [
 		'**/test*.js',
-		//'**/testSulfide.js',
+		//'**/testSulfideElement.js',
 	],
 	helpers: [
 		'helpers/*.js',
