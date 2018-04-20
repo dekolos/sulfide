@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer');
-const {Target} = require('puppeteer/lib/Browser');
+const Target = require('puppeteer/lib/Target');
 const Page = require('puppeteer/lib/Page');
 
 require('./String');
@@ -171,11 +171,20 @@ Sulfide.getBrowserLaunchOptions = () => {
 	}
 
 	if ( Sulfide.config.nwApp ) {
-		options.executablePath = launchUrl;
+		const re = /(\S+)(?:\s+(.+))?/;
+		const parts = launchUrl.trim().match(re);
+		options.executablePath = parts[1];
 
 		// Now make sure puppeteer won't disable the extensions because NWJS runs as an extension
 		options.ignoreDefaultArgs = true;
 		options.args = options.args.concat(NWJS_PUPPETEER_OPTIONS);
+
+		// We'll treat anything after the first space as arguments for the app
+		// This makes it possible to test dev versions op NWjs apps:
+		// $.open('/path/to/nw /path/to/my/app)
+		if ( parts[2] ) {
+			options.args.push(parts[2]);
+		}
 
 		// Make sure we can get Page Promises for Target objects when using NWJS
 		overridePuppeteer();
@@ -386,8 +395,8 @@ const overridePuppeteer = () => {
 	// for NWJS apps.
 	Target.prototype.page = function pageSulfideOverride() {
 		if ( (this._targetInfo.type === 'page' || (Sulfide.config.nwApp && this._targetInfo.type === 'app' && this._targetInfo.url) ) && !this._pagePromise ) {
-			this._pagePromise = this._browser._connection.createSession(this._targetId)
-				.then(client => Page.create(client, this, this._browser._ignoreHTTPSErrors, this._browser._appMode, this._browser._screenshotTaskQueue));
+			this._pagePromise = this._sessionFactory()
+				.then(client => Page.create(client, this, this._ignoreHTTPSErrors, this._setDefaultViewport, this._screenshotTaskQueue));
 		}
 		return this._pagePromise;
 	};
