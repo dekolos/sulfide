@@ -160,9 +160,9 @@ Sulfide is tested by using itself. To see how to use Sulfide in Jasmine tests ju
 [tests]() directory.
 
 ## NWJS apps (EXPERIMENTAL)
-Puppeteer requires Chromium 65+, so to test [NWJS](https://nwjs.io/) apps you must build your app with the (yet) unstable
-v0.29.0. Instead of the URL of a page that you want to open, you should pass the path to your NWJS app as a parameter to
-the Sulfide.open method:
+Puppeteer requires Chromium 65+, so to test [NWJS](https://nwjs.io/) apps you must build your app with NWJS
+v0.29.0 or newer. Instead of the URL of a page that you want to open, you should pass the path to your NWJS
+app as a parameter to the Sulfide.open method:
 
 ```javascript
 require('sulfide');
