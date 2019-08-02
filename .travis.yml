@@ -5,8 +5,8 @@ before_script:
     - yarn run lint
 script:
     - yarn run test
-before_deploy:
-    - yarn run doxdox && ls -l docs/api
+# before_deploy:
+#    - yarn run doxdox && ls -l docs/api
 deploy:
   - provider: pages
     skip-cleanup: true
